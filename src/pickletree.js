@@ -170,6 +170,8 @@ class PickleTree {
             childs: [],
             //childs status (child list opened or not)
             childStatus: this.StartStatus,
+            //check status for node
+            checkStatus: false,
             //this method will return child nodes
             getChilds: () => this.getChilds(node),
             //this method will remove node from dom
@@ -257,8 +259,7 @@ class PickleTree {
             sw_item.id = 'sw_' + node.id;
 
             ck_item.value = node.value;
-
-
+            
             //switch is added to li element
             li_item.appendChild(sw_item);
         }
@@ -287,7 +288,12 @@ class PickleTree {
         //switch event for node
         if (this.SwitchMode) {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
-                //toggle item childs
+                //change node checked data
+
+                for (let i = 0; i < this.NodeList.length; i++) {
+                    this.NodeList[i].checkStatus = e.currentTarget.checked ? true : false;
+                }
+                //trigger callback if exists
                 if (typeof this.switchCallback == "function") this.switchCallback(this.getNode(e.currentTarget.parentElement.id.split('node_')[1]));
             });
         }
@@ -304,29 +310,30 @@ class PickleTree {
         if (this.Data.length > 0) {
             //first reshape data
             let order = (list, p = { id: 0, Child: [] }, tree = []) => {
-                    let childrens = list.filter(y => y.parentid === p.id);
-                    if (childrens.length > 0) {
-                        if (p.id === 0) {
-                            tree = childrens;
-                        } else {
-                            p['Child'] = childrens
-                        }
-                        for (let i = 0; i < childrens.length; i++) {
-                            order(list, childrens[i]);
-                        }
+                let childrens = list.filter(y => y.parentid === p.id);
+                if (childrens.length > 0) {
+                    if (p.id === 0) {
+                        tree = childrens;
+                    } else {
+                        p['Child'] = childrens
                     }
-                    return tree;
+                    for (let i = 0; i < childrens.length; i++) {
+                        order(list, childrens[i]);
+                    }
                 }
-                //then create nodes
+                return tree;
+            }
+
+            //then create nodes
             let set = (list) => {
-                    for (let i = 0; i < list.length; i++) {
-                        this.createNode(list[i].title, list[i].id, [], this.getNode(list[i].parentid));
-                        if (list[i].Child) {
-                            set(list[i].Child);
-                        }
+                for (let i = 0; i < list.length; i++) {
+                    this.createNode(list[i].title, list[i].id, [], this.getNode(list[i].parentid));
+                    if (list[i].Child) {
+                        set(list[i].Child);
                     }
                 }
-                //start chain
+            }
+            //start chain
             set(order(this.Data));
 
         }

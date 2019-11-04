@@ -19,8 +19,9 @@
         c_startStatus: true,
         c_switchMode: true,
         //rowCreateCallback: (node) => {},
+        switchCallback:(node) => console.log(node),
         drawCallback: () => {
-            console.log('tree ended..');
+            console.log('tree drawed ..');
         },
         c_data: [{
             id: 1,
