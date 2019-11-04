@@ -23,6 +23,8 @@ class PickleTree {
         this.rowCreateCallback = obj.rowCreateCallback;
         //draw callback
         this.drawCallback = obj.drawCallback;
+        //switch callback
+        this.switchCallback = obj.switchCallback;
         //tree json data
         this.Data = obj.c_data;
         //build tree
@@ -282,6 +284,15 @@ class PickleTree {
             this.toggleNode(this.getNode(e.currentTarget.parentElement.id.split('node_')[1]));
         });
 
+        //switch event for node
+        if (this.SwitchMode) {
+            document.getElementById('ck_' + node.id).addEventListener('click', e => {
+                //toggle item childs
+                if (typeof this.switchCallback == "function") this.switchCallback(this.getNode(e.currentTarget.parentElement.id.split('node_')[1]));
+            });
+        }
+
+        //draw callback  method
         if (typeof this.rowCreateCallback == "function") this.rowCreateCallback(node);
     }
 
