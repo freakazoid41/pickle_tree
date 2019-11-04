@@ -261,9 +261,6 @@ class PickleTree {
             li_item.appendChild(sw_item);
         }
 
-
-
-
         //set ul tag to li item
         li_item.appendChild(ul_item);
 
