@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>pickletree Simple Example</title>
+    <n_title>pickletree Simple Example</n_title>
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="src/pickletree.css">
 
@@ -23,43 +23,47 @@
         drawCallback: () => {
             console.log('tree drawed ..');
         },
+        c_config : {
+            foldedStatus:true
+        },
         c_data: [{
-            id: 1,
-            title: 'falan1',
-            parentid: 0
+            n_id: 1,
+            n_title: 'falan1',
+            n_parentid: 0,
+            n_checked:true
         }, {
-            id: 2,
-            title: 'falan2',
-            parentid: 0
+            n_id: 2,
+            n_title: 'falan2',
+            n_parentid: 0
         }, {
-            id: 3,
-            title: 'falan3',
-            parentid: 0
+            n_id: 3,
+            n_title: 'falan3',
+            n_parentid: 0
         }, {
-            id: 4,
-            title: 'falan1-1',
-            parentid: 1
+            n_id: 4,
+            n_title: 'falan1-1',
+            n_parentid: 1
         }, {
-            id: 5,
-            title: 'falan1-2',
-            parentid: 1
+            n_id: 5,
+            n_title: 'falan1-2',
+            n_parentid: 1
         }, {
-            id: 6,
-            title: 'falan2-1',
-            parentid: 2
+            n_id: 6,
+            n_title: 'falan2-1',
+            n_parentid: 2
         }, {
-            id: 7,
-            title: 'falan2-2',
-            parentid: 2
+            n_id: 7,
+            n_title: 'falan2-2',
+            n_parentid: 2
         }, {
-            id: 8,
-            title: 'falan2-3',
-            parentid: 2
+            n_id: 8,
+            n_title: 'falan2-3',
+            n_parentid: 2
         }
         , {
-            id: 9,
-            title: 'falan2-3',
-            parentid: 5
+            n_id: 9,
+            n_title: 'falan2-3',
+            n_parentid: 5
         }]
     });
     /*for (let i = 0; i < 3; i++) {

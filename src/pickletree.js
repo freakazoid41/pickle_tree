@@ -8,17 +8,17 @@ class PickleTree {
     constructor(obj) {
         console.log('tree started');
         //start status is collapsed or not
-        this.StartStatus = obj.c_startStatus;
+        //this.startStatus = obj.c_startStatus;
         //logs are open or close
-        this.LogMode = obj.c_logMode;
+        this.logMode = obj.c_logMode;
         //switch mode
-        this.SwitchMode = obj.c_switchMode;
+        this.switchMode = obj.c_switchMode;
         //target div id
-        this.Target = obj.c_target;
+        this.target = obj.c_target;
         //building area
-        this.Area = '';
+        this.area = '';
         //available nodes list
-        this.NodeList = [];
+        this.nodeList = [];
         //row create callback
         this.rowCreateCallback = obj.rowCreateCallback;
         //draw callback
@@ -26,9 +26,9 @@ class PickleTree {
         //switch callback
         this.switchCallback = obj.switchCallback;
         //tree json data
-        this.Data = obj.c_data;
+        this.data = obj.c_data;
         //build tree
-        this.build();
+        this.build(obj.c_config);
     }
 
 
@@ -39,7 +39,7 @@ class PickleTree {
      * @param {string} message for log messages
      */
     log(message) {
-        if (this.LogMode) {
+        if (this.logMode) {
             console.log(message);
         }
     }
@@ -47,9 +47,25 @@ class PickleTree {
     /**
      * Building main details
      */
-    build() {
-        document.getElementById(this.Target).innerHTML = '<ul id="tree_picklemain"></ul>';
-        this.Area = document.getElementById('tree_picklemain');
+    build(c_config) {
+        let config = {
+            foldedIcon : 'fa fa-plus',
+            unFoldedIcon : 'fa fa-minus',
+            foldedStatus : false
+        }
+
+        //check config here!!
+        for(let key in c_config){
+            config[key] = c_config[key];
+        }
+
+
+        //set config data
+        this.config = config;
+
+
+        document.getElementById(this.target).innerHTML = '<ul id="tree_picklemain"></ul>';
+        this.area = document.getElementById('tree_picklemain');
         this.log('tree build started..');
         this.drawData();
     }
@@ -61,7 +77,7 @@ class PickleTree {
     getNode(id) {
         this.log('node returned..');
         //return node
-        return this.NodeList.find(x => x.id === 'node_' + id);
+        return this.nodeList.find(x => x.id === 'node_' + id);
     }
 
     /**
@@ -70,12 +86,12 @@ class PickleTree {
      */
     setChildNodes(node) {
         //update node parent
-        for (let i = 0; i < this.NodeList.length; i++) {
+        for (let i = 0; i < this.nodeList.length; i++) {
             //if is parent pust to his childs
-            if (this.NodeList[i].id === node.parent.id) {
-                this.NodeList[i].childs.push(node.id);
+            if (this.nodeList[i].id === node.parent.id) {
+                this.nodeList[i].childs.push(node.id);
                 //show icon for childs
-                document.getElementById('i_' + this.NodeList[i].id).style.display = '';
+                document.getElementById('i_' + this.nodeList[i].id).style.display = '';
             }
         }
     }
@@ -89,9 +105,9 @@ class PickleTree {
      */
     getChilds(node) {
         let list = [];
-        for (let i = 0; i < this.NodeList.length; i++) {
-            if (node.childs.includes(this.NodeList[i].id)) {
-                list.push(this.getNode(this.NodeList[i].id));
+        for (let i = 0; i < this.nodeList.length; i++) {
+            if (node.childs.includes(this.nodeList[i].id)) {
+                list.push(this.getNode(this.nodeList[i].id));
             }
         }
         this.log('node childs returned..');
@@ -105,7 +121,7 @@ class PickleTree {
     toggleNode(node) {
         let ie = document.getElementById('i_' + node.id);
         let ule = document.getElementById('c_' + node.id);
-        if (node.childStatus) {
+        if (node.foldedStatus) {
             //change icon
             ie.classList.remove('fa-minus');
             ie.classList.add('fa-plus');
@@ -120,8 +136,8 @@ class PickleTree {
         }
 
         //change node status
-        for (let i = 0; i < this.NodeList.length; i++) {
-            this.NodeList[i].childStatus = !this.NodeList[i].childStatus;
+        for (let i = 0; i < this.nodeList.length; i++) {
+            this.nodeList[i].foldedStatus = !this.nodeList[i].foldedStatus;
         }
         this.log('node toggled..');
     }
@@ -131,7 +147,6 @@ class PickleTree {
      * @param {object} node 
      */
     deleteNode(node) {
-        console.log(node);
         let elm = document.getElementById(node.id);
         if (node.childs.length > 0) {
             for (let i = 0; i < node.childs.length; i++) {
@@ -142,36 +157,40 @@ class PickleTree {
         this.log('node removed..(' + node.id + ')');
     }
 
+    /**
+     * this method will check node childs and his parents if not checked.
+     * @param {object} node 
+     */
+    checkFamily(node){
+
+    }
     //#endregion
 
 
 
     /**
      * creating node
-     * @param {string} n_title 
-     * @param {string} n_id 
-     * @param {htmlobjects} n_elements 
-     * @param {node object} p_parentNode 
+     * @param {object} obj
      */
-    createNode(n_title = 'new node', n_id, n_elements = [], p_parentNode = { id: 0 }) {
-        n_id = n_id === null ? Date.now() : n_id;
+    createNode(obj) {
+        obj.n_id = typeof obj.n_id === 'undefined' ? Date.now() : obj.n_id;
         let node = {
             //node value
-            value: n_id,
+            value: obj.n_id,
             //node id
-            id: 'node_' + n_id,
+            id: 'node_' + obj.n_id,
             //node title
-            title: n_title,
+            title: obj.n_title,
             //node html elements
-            elements: n_elements,
+            elements: obj.n_elements,
             //node parent element
-            parent: p_parentNode,
+            parent: typeof obj.n_parent === 'undefined' ? {id:0} : obj.n_parent,
             //node child element ids
             childs: [],
             //childs status (child list opened or not)
-            childStatus: this.StartStatus,
+            foldedStatus: this.config.foldedStatus,
             //check status for node
-            checkStatus: false,
+            checkStatus: obj.n_checkStatus,
             //this method will return child nodes
             getChilds: () => this.getChilds(node),
             //this method will remove node from dom
@@ -180,7 +199,7 @@ class PickleTree {
         }
 
         //node is added to container
-        this.NodeList.push(node);
+        this.nodeList.push(node);
         //node is drawed
         this.drawNode(node);
         //logged
@@ -194,13 +213,12 @@ class PickleTree {
      * @param {object} node object for creating html element
      */
     drawNode(node) {
-        let icon = 'fa-plus';
+        let icon = this.config.foldedIcon;
         let style = 'none;';
-        if (this.StartStatus) {
-            icon = 'fa-minus';
+        if (node.foldedStatus) {
+            icon = this.config.unFoldedIcon;
             style = '';
         }
-
         //#region elements
 
         //node li item
@@ -217,8 +235,10 @@ class PickleTree {
         //set i item style
         i_item.style.color = 'black';
         //set i item icon
-        i_item.classList.add('fa');
-        i_item.classList.add(icon);
+        icon = icon.split(' ');
+        for(let i=0;i<icon.length;i++){
+            i_item.classList.add(icon[i]);
+        }
         i_item.style.display = 'none';
 
         //set ul item id
@@ -242,7 +262,7 @@ class PickleTree {
 
 
         //set switch to li item if user is wanted
-        if (this.SwitchMode) {
+        if (this.switchMode) {
             let sw_item = document.createElement('label');
             let ck_item = document.createElement('input');
             let spn_item = document.createElement('span');
@@ -259,6 +279,9 @@ class PickleTree {
             sw_item.id = 'sw_' + node.id;
 
             ck_item.value = node.value;
+
+            //if item created as checked
+            ck_item.checked = node.checkStatus;
             
             //switch is added to li element
             li_item.appendChild(sw_item);
@@ -272,7 +295,7 @@ class PickleTree {
         //if is main node
         if (node.parent.id === 0) {
             //put item to area
-            this.Area.appendChild(li_item);
+            this.area.appendChild(li_item);
         } else {
             //if has parent set to parents childs
             this.setChildNodes(node);
@@ -286,12 +309,12 @@ class PickleTree {
         });
 
         //switch event for node
-        if (this.SwitchMode) {
+        if (this.switchMode) {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
                 //change node checked data
 
-                for (let i = 0; i < this.NodeList.length; i++) {
-                    this.NodeList[i].checkStatus = e.currentTarget.checked ? true : false;
+                for (let i = 0; i < this.nodeList.length; i++) {
+                    this.nodeList[i].checkStatus = e.currentTarget.checked ? true : false;
                 }
                 //trigger callback if exists
                 if (typeof this.switchCallback == "function") this.switchCallback(this.getNode(e.currentTarget.parentElement.id.split('node_')[1]));
@@ -307,12 +330,12 @@ class PickleTree {
      */
     drawData() {
         //if data is exist
-        if (this.Data.length > 0) {
+        if (this.data.length > 0) {
             //first reshape data
-            let order = (list, p = { id: 0, Child: [] }, tree = []) => {
-                let childrens = list.filter(y => y.parentid === p.id);
+            let order = (list, p = { n_id: 0, Child: [] }, tree = []) => {
+                let childrens = list.filter(y => y.n_parentid === p.n_id);
                 if (childrens.length > 0) {
-                    if (p.id === 0) {
+                    if (p.n_id === 0) {
                         tree = childrens;
                     } else {
                         p['Child'] = childrens
@@ -327,25 +350,24 @@ class PickleTree {
             //then create nodes
             let set = (list) => {
                 for (let i = 0; i < list.length; i++) {
-                    this.createNode(list[i].title, list[i].id, [], this.getNode(list[i].parentid));
+                    this.createNode({
+                        n_title : list[i].n_title,
+                        n_id:list[i].n_id,
+                        n_elements : [],
+                        n_parent :this.getNode(list[i].n_parentid),
+                        n_checkStatus:typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
+                    });
                     if (list[i].Child) {
                         set(list[i].Child);
                     }
                 }
             }
             //start chain
-            set(order(this.Data));
+            set(order(this.data));
 
         }
         //start drawcallback
         this.drawCallback();
 
     }
-
-
-
-
-
-
-
 }
