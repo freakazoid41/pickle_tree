@@ -7,12 +7,6 @@ class PickleTree {
      */
     constructor(obj) {
         console.log('tree started');
-        //start status is collapsed or not
-        //this.startStatus = obj.c_startStatus;
-        //logs are open or close
-        this.logMode = obj.c_logMode;
-        //switch mode
-        this.switchMode = obj.c_switchMode;
         //target div id
         this.target = obj.c_target;
         //building area
@@ -39,7 +33,7 @@ class PickleTree {
      * @param {string} message for log messages
      */
     log(message) {
-        if (this.logMode) {
+        if (this.config.logMode) {
             console.log(message);
         }
     }
@@ -49,13 +43,22 @@ class PickleTree {
      */
     build(c_config) {
         let config = {
-            foldedIcon : 'fa fa-plus',
-            unFoldedIcon : 'fa fa-minus',
-            foldedStatus : false
+            //logs are open or close
+            logMode: false,
+            //switch mode
+            switchMode: false,
+            //family mode
+            familyMode: false,
+            //fold icon
+            foldedIcon: 'fa fa-plus',
+            //unfold icon
+            unFoldedIcon: 'fa fa-minus',
+            //start status is collapsed or not
+            foldedStatus: false
         }
 
         //check config here!!
-        for(let key in c_config){
+        for (let key in c_config) {
             config[key] = c_config[key];
         }
 
@@ -161,9 +164,16 @@ class PickleTree {
      * this method will check node childs and his parents if not checked.
      * @param {object} node 
      */
-    checkFamily(node){
+    checkFamily(node) {
+        let parentCheck = async(node) => {
+            if (node.parent.id !== 0) {
 
+            }
+        }
+
+        parentCheck(node);
     }
+
     //#endregion
 
 
@@ -184,7 +194,7 @@ class PickleTree {
             //node html elements
             elements: obj.n_elements,
             //node parent element
-            parent: typeof obj.n_parent === 'undefined' ? {id:0} : obj.n_parent,
+            parent: typeof obj.n_parent === 'undefined' ? { id: 0 } : obj.n_parent,
             //node child element ids
             childs: [],
             //childs status (child list opened or not)
@@ -213,11 +223,11 @@ class PickleTree {
      * @param {object} node object for creating html element
      */
     drawNode(node) {
-        let icon = this.config.foldedIcon;
-        let style = 'none;';
+        let icon = this.config.unFoldedIcon;
+        let style = '';
         if (node.foldedStatus) {
-            icon = this.config.unFoldedIcon;
-            style = '';
+            icon = this.config.foldedIcon;
+            style = 'none';
         }
         //#region elements
 
@@ -236,7 +246,7 @@ class PickleTree {
         i_item.style.color = 'black';
         //set i item icon
         icon = icon.split(' ');
-        for(let i=0;i<icon.length;i++){
+        for (let i = 0; i < icon.length; i++) {
             i_item.classList.add(icon[i]);
         }
         i_item.style.display = 'none';
@@ -262,7 +272,7 @@ class PickleTree {
 
 
         //set switch to li item if user is wanted
-        if (this.switchMode) {
+        if (this.config.switchMode) {
             let sw_item = document.createElement('label');
             let ck_item = document.createElement('input');
             let spn_item = document.createElement('span');
@@ -282,7 +292,7 @@ class PickleTree {
 
             //if item created as checked
             ck_item.checked = node.checkStatus;
-            
+
             //switch is added to li element
             li_item.appendChild(sw_item);
         }
@@ -309,7 +319,7 @@ class PickleTree {
         });
 
         //switch event for node
-        if (this.switchMode) {
+        if (this.config.switchMode) {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
                 //change node checked data
 
@@ -349,20 +359,20 @@ class PickleTree {
 
             //then create nodes
             let set = (list) => {
-                for (let i = 0; i < list.length; i++) {
-                    this.createNode({
-                        n_title : list[i].n_title,
-                        n_id:list[i].n_id,
-                        n_elements : [],
-                        n_parent :this.getNode(list[i].n_parentid),
-                        n_checkStatus:typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
-                    });
-                    if (list[i].Child) {
-                        set(list[i].Child);
+                    for (let i = 0; i < list.length; i++) {
+                        this.createNode({
+                            n_title: list[i].n_title,
+                            n_id: list[i].n_id,
+                            n_elements: [],
+                            n_parent: this.getNode(list[i].n_parentid),
+                            n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
+                        });
+                        if (list[i].Child) {
+                            set(list[i].Child);
+                        }
                     }
                 }
-            }
-            //start chain
+                //start chain
             set(order(this.data));
 
         }
