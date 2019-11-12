@@ -166,7 +166,6 @@ class PickleTree {
      * @param {object} node 
      */
     checkNode(node){
-        console.log(node)
         //change node checked data
         for (let i = 0; i < this.nodeList.length; i++) {
             this.nodeList[i].checkStatus = node.checkStatus;
@@ -185,23 +184,35 @@ class PickleTree {
      */
     checkNodeFamily(node) {
         let parentCheck = async(node) => {
-            /*if (node.parent.id !== 0) {
-
-            }*/
+            //first check if has parent
+            if (node.parent.id !== 0) {
+                //then get parent node
+                node = node.parent;
+                //change parent node status
+                node.checkStatus=true;
+                //check parent node
+                this.checkNode(node);
+                //then restart process
+                parentCheck(node);
+            }
         }
 
 
         let childCheck = async(node) => {
+            //first check main node
             this.checkNode(node);
+            //then check childs if exist
             if(node.childs.length>0){
+                //foreach child
                 for(let i=0;i<node.childs.length;i++){
+                    //restart process
                     childCheck(this.getNode(node.childs[i].split('_')[1]));
                 }
             }
         }
 
         childCheck(node);
-        //parentCheck(node);
+        if(node.checkStatus) parentCheck(node);
     }
 
     //#endregion
