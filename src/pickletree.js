@@ -162,17 +162,46 @@ class PickleTree {
     }
 
     /**
+     * this method will check node and its family.
+     * @param {object} node 
+     */
+    checkNode(node){
+        console.log(node)
+        //change node checked data
+        for (let i = 0; i < this.nodeList.length; i++) {
+            this.nodeList[i].checkStatus = node.checkStatus;
+        }
+        //trigger callback if exists
+        if (typeof this.switchCallback == "function") this.switchCallback(node);
+        //check html element if family mode is open
+        if(this.config.familyMode){
+            document.getElementById('ck_'+node.id).checked = node.checkStatus;
+        }
+    }
+
+    /**
      * this method will check node childs and his parents if not checked.
      * @param {object} node 
      */
-    checkFamily(node) {
+    checkNodeFamily(node) {
         let parentCheck = async(node) => {
             /*if (node.parent.id !== 0) {
 
             }*/
         }
 
-        parentCheck(node);
+
+        let childCheck = async(node) => {
+            this.checkNode(node);
+            if(node.childs.length>0){
+                for(let i=0;i<node.childs.length;i++){
+                    childCheck(this.getNode(node.childs[i].split('_')[1]));
+                }
+            }
+        }
+
+        childCheck(node);
+        //parentCheck(node);
     }
 
     //#endregion
@@ -322,13 +351,13 @@ class PickleTree {
         //switch event for node
         if (this.config.switchMode) {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
-                //change node checked data
-
-                for (let i = 0; i < this.nodeList.length; i++) {
-                    this.nodeList[i].checkStatus = e.currentTarget.checked ? true : false;
+                let node = this.getNode(e.currentTarget.parentElement.parentElement.id.split('_')[1]);
+                node.checkStatus = e.currentTarget.checked;
+                if(this.config.familyMode){
+                    this.checkNodeFamily(node);
+                }else{
+                    this.checkNode(node);
                 }
-                //trigger callback if exists
-                if (typeof this.switchCallback == "function") this.switchCallback(this.getNode(e.currentTarget.parentElement.id.split('node_')[1]));
             });
         }
 
