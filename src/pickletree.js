@@ -54,7 +54,8 @@ class PickleTree {
             //unfold icon
             unFoldedIcon: 'fa fa-minus',
             //start status is collapsed or not
-            foldedStatus: false
+            foldedStatus: false,
+
         }
 
         //check config here!!
@@ -166,9 +167,9 @@ class PickleTree {
      */
     checkFamily(node) {
         let parentCheck = async(node) => {
-            if (node.parent.id !== 0) {
+            /*if (node.parent.id !== 0) {
 
-            }
+            }*/
         }
 
         parentCheck(node);
