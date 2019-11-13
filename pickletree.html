@@ -16,7 +16,7 @@
     const tree = new PickleTree({
         c_target: 'div_tree',
         //rowCreateCallback: (node) => {},
-        switchCallback: (node) => console.log(node),
+        //switchCallback: (node) => console.log(node),
         drawCallback: () => {
             console.log('tree drawed ..');
         },
@@ -48,6 +48,14 @@
             n_title: 'falan1-2',
             n_parentid: 1
         }, {
+            n_id: 10,
+            n_title: 'falan1-2-1',
+            n_parentid: 5
+        }, {
+            n_id: 11,
+            n_title: 'falan1-2-1-1',
+            n_parentid: 10
+        },{
             n_id: 6,
             n_title: 'falan2-1',
             n_parentid: 2
@@ -61,7 +69,7 @@
             n_parentid: 2
         }, {
             n_id: 9,
-            n_title: 'falan2-3',
+            n_title: 'falan1-2-2',
             n_parentid: 5
         }]
     });

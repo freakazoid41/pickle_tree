@@ -123,27 +123,31 @@ class PickleTree {
      * @param {object} node 
      */
     toggleNode(node) {
-        let ie = document.getElementById('i_' + node.id);
-        let ule = document.getElementById('c_' + node.id);
-        if (node.foldedStatus) {
-            //change icon
-            ie.classList.remove('fa-minus');
-            ie.classList.add('fa-plus');
-            //hide element
-            ule.style.display = 'none';
-        } else {
-            //change icon
-            ie.classList.remove('fa-plus');
-            ie.classList.add('fa-minus');
-            //show element
-            ule.style.display = '';
+        if(node.childs.length>0){
+            let ie = document.getElementById('i_' + node.id);
+            let ule = document.getElementById('c_' + node.id);
+            if (!node.foldedStatus) {
+                //change icon
+                ie.classList.remove('fa-minus');
+                ie.classList.add('fa-plus');
+                //hide element
+                ule.style.display = 'none';
+            } else {
+                //change icon
+                ie.classList.remove('fa-plus');
+                ie.classList.add('fa-minus');
+                //show element
+                ule.style.display = '';
+            }
+            node.foldedStatus  = !node.foldedStatus ;
+            //change node status
+            for (let i = 0; i < this.nodeList.length; i++) {
+                this.nodeList[i].foldedStatus = node.foldedStatus;
+            }
+            this.log('node toggled..');
+        }else{
+            this.log('node not has childs...!');
         }
-
-        //change node status
-        for (let i = 0; i < this.nodeList.length; i++) {
-            this.nodeList[i].foldedStatus = !this.nodeList[i].foldedStatus;
-        }
-        this.log('node toggled..');
     }
 
     /**
@@ -169,6 +173,12 @@ class PickleTree {
         //change node checked data
         for (let i = 0; i < this.nodeList.length; i++) {
             this.nodeList[i].checkStatus = node.checkStatus;
+        }
+        //then if is checked and folded unfold and open childs
+        if(node.checkStatus && node.childs.length>0) {
+            //make element looks like is folded
+            node.foldedStatus=true;
+            this.toggleNode(node);
         }
         //trigger callback if exists
         if (typeof this.switchCallback == "function") this.switchCallback(node);
@@ -201,8 +211,6 @@ class PickleTree {
         let childCheck = async(node) => {
             //first check main node
             this.checkNode(node);
-            //then if is checked and folded unfold and open childs
-            if(node.checkStatus)  this.toggleNode(node);
             //then check childs if exist
             if(node.childs.length>0){
                 //foreach child
@@ -217,6 +225,15 @@ class PickleTree {
         if(node.checkStatus) parentCheck(node);
     }
 
+    /**
+     * this method will unfold all parents of node 
+     * @param {object} node 
+     */
+    showFamily(node){
+        let parentCheck = async(node) => {
+
+        }
+    }
     //#endregion
 
 
@@ -249,7 +266,9 @@ class PickleTree {
             //this method will remove node from dom
             deleteNode: () => this.deleteNode(node),
             //this method will toggle node
-            toggleNode: () => this.toggleNode(node)
+            toggleNode: () => this.toggleNode(node),
+            //this method will show node location
+            showFamily: () => this.showFamily(node)
 
         }
 
