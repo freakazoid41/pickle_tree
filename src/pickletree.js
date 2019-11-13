@@ -201,6 +201,8 @@ class PickleTree {
         let childCheck = async(node) => {
             //first check main node
             this.checkNode(node);
+            //then if is checked and folded unfold and open childs
+            if(node.checkStatus)  this.toggleNode(node);
             //then check childs if exist
             if(node.childs.length>0){
                 //foreach child
@@ -245,7 +247,9 @@ class PickleTree {
             //this method will return child nodes
             getChilds: () => this.getChilds(node),
             //this method will remove node from dom
-            deleteNode: () => this.deleteNode(node)
+            deleteNode: () => this.deleteNode(node),
+            //this method will toggle node
+            toggleNode: () => this.toggleNode(node)
 
         }
 
