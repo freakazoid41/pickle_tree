@@ -123,7 +123,7 @@ class PickleTree {
      * @param {object} node 
      */
     toggleNode(node) {
-        if(node.childs.length>0){
+        if (node.childs.length > 0) {
             let ie = document.getElementById('i_' + node.id);
             let ule = document.getElementById('c_' + node.id);
             if (!node.foldedStatus) {
@@ -139,13 +139,13 @@ class PickleTree {
                 //show element
                 ule.style.display = '';
             }
-            node.foldedStatus  = !node.foldedStatus ;
+            node.foldedStatus = !node.foldedStatus;
             //change node status
             for (let i = 0; i < this.nodeList.length; i++) {
                 this.nodeList[i].foldedStatus = node.foldedStatus;
             }
             this.log('node toggled..');
-        }else{
+        } else {
             this.log('node not has childs...!');
         }
     }
@@ -169,22 +169,22 @@ class PickleTree {
      * this method will check node and its family.
      * @param {object} node 
      */
-    checkNode(node){
+    checkNode(node) {
         //change node checked data
         for (let i = 0; i < this.nodeList.length; i++) {
             this.nodeList[i].checkStatus = node.checkStatus;
         }
         //then if is checked and folded unfold and open childs
-        if(node.checkStatus && node.childs.length>0) {
+        if (node.checkStatus && node.childs.length > 0) {
             //make element looks like is folded
-            node.foldedStatus=true;
+            node.foldedStatus = true;
             this.toggleNode(node);
         }
         //trigger callback if exists
         if (typeof this.switchCallback == "function") this.switchCallback(node);
         //check html element if family mode is open
-        if(this.config.familyMode){
-            document.getElementById('ck_'+node.id).checked = node.checkStatus;
+        if (this.config.familyMode) {
+            document.getElementById('ck_' + node.id).checked = node.checkStatus;
         }
     }
 
@@ -199,7 +199,7 @@ class PickleTree {
                 //then get parent node
                 node = node.parent;
                 //change parent node status
-                node.checkStatus=true;
+                node.checkStatus = true;
                 //check parent node
                 this.checkNode(node);
                 //then restart process
@@ -212,9 +212,9 @@ class PickleTree {
             //first check main node
             this.checkNode(node);
             //then check childs if exist
-            if(node.childs.length>0){
+            if (node.childs.length > 0) {
                 //foreach child
-                for(let i=0;i<node.childs.length;i++){
+                for (let i = 0; i < node.childs.length; i++) {
                     //restart process
                     childCheck(this.getNode(node.childs[i].split('_')[1]));
                 }
@@ -222,18 +222,26 @@ class PickleTree {
         }
 
         childCheck(node);
-        if(node.checkStatus) parentCheck(node);
+        if (node.checkStatus) parentCheck(node);
     }
 
     /**
      * this method will unfold all parents of node 
      * @param {object} node 
      */
-    showFamily(node){
-        let parentCheck = async(node) => {
-
+    async showFamily(node) {
+        //check if has parent
+        if (node.parent.id !== 0) {
+            //then make node status closed
+            node.parent.foldedStatus = true;
+            //after send parent node for toggle
+            this.toggleNode(node.parent);
+            //make recursive for another parents
+            this.showFamily(node.parent);
         }
+
     }
+
     //#endregion
 
 
@@ -387,9 +395,9 @@ class PickleTree {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
                 let node = this.getNode(e.currentTarget.parentElement.parentElement.id.split('_')[1]);
                 node.checkStatus = e.currentTarget.checked;
-                if(this.config.familyMode){
+                if (this.config.familyMode) {
                     this.checkNodeFamily(node);
-                }else{
+                } else {
                     this.checkNode(node);
                 }
             });
