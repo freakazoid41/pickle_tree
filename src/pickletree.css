@@ -1,3 +1,5 @@
+/** switch styles **/
+
 .switch {
     position: relative;
     display: inline-block;
@@ -59,3 +61,31 @@ input:checked+.slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+
+/* Switch styles end */
+
+
+/** border styles **/
+
+ul li {
+    list-style-type: none;
+}
+
+ul li div {
+    display: flex;
+    list-style-type: none;
+    margin: 5px;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    padding: 2px;
+    align-items: center;
+}
+
+ul li a {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+
+/* Border styles end */

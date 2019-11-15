@@ -320,6 +320,10 @@ class PickleTree {
         let i_item = document.createElement("i");
         //node ul item
         let ul_item = document.createElement("ul");
+        //node group item 
+        let div_item = document.createElement("div");
+
+
 
         //set i item id
         i_item.id = 'i_' + node.id;
@@ -348,8 +352,10 @@ class PickleTree {
 
         //set li item id
         li_item.id = node.id;
-        //set a tag to li item
-        li_item.appendChild(a_item);
+
+        div_item.id = 'div_g_' + node.id;
+        //set a tag to div item
+        div_item.appendChild(a_item);
 
 
         //set switch to li item if user is wanted
@@ -375,9 +381,12 @@ class PickleTree {
             ck_item.checked = node.checkStatus;
 
             //switch is added to li element
-            li_item.appendChild(sw_item);
+            div_item.appendChild(sw_item);
         }
 
+
+
+        li_item.appendChild(div_item);
         //set ul tag to li item
         li_item.appendChild(ul_item);
 
@@ -396,13 +405,13 @@ class PickleTree {
         //toggle event for node
         document.getElementById('a_toggle_' + node.id).addEventListener('click', e => {
             //toggle item childs
-            this.toggleNode(this.getNode(e.currentTarget.parentElement.id.split('node_')[1]));
+            this.toggleNode(this.getNode(e.currentTarget.id.split('_')[3]));
         });
 
         //switch event for node
         if (this.config.switchMode) {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
-                let node = this.getNode(e.currentTarget.parentElement.parentElement.id.split('_')[1]);
+                let node = this.getNode(e.currentTarget.id.split('_')[2]);
                 node.checkStatus = e.currentTarget.checked;
                 if (this.config.familyMode) {
                     this.checkNodeFamily(node);
