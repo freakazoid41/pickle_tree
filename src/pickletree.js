@@ -126,7 +126,7 @@ class PickleTree {
         if (node.childs.length > 0) {
             let ie = document.getElementById('i_' + node.id);
             let ule = document.getElementById('c_' + node.id);
-            if (!node.foldedStatus) {
+            if (node.foldedStatus === false) {
                 //change icon
                 ie.classList.remove('fa-minus');
                 ie.classList.add('fa-plus');
@@ -142,7 +142,9 @@ class PickleTree {
             node.foldedStatus = !node.foldedStatus;
             //change node status
             for (let i = 0; i < this.nodeList.length; i++) {
-                this.nodeList[i].foldedStatus = node.foldedStatus;
+                if (this.nodeList[i].id === node.id) {
+                    this.nodeList[i].foldedStatus = node.foldedStatus;
+                }
             }
             this.log('node toggled..');
         } else {
