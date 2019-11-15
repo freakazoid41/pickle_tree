@@ -6,7 +6,7 @@
 
 > Pickle tree does't need anything except you !
 
-**Badges will go here**
+**Badges Falan**
 
 - Simple javascript ability
 - Simple css ability for some style editing for your project
@@ -109,5 +109,5 @@ const tree = new PickleTree({
 
 ### Clone
 
-- Clone this repo to your local machine using `https://github.com/fvcproductions/SOMEREPO`
+- Clone this repo to your local machine using `https://github.com/freakazoid41/pickletree`
 
