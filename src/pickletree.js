@@ -6,7 +6,6 @@ class PickleTree {
      * @param {object} obj as tree object 
      */
     constructor(obj) {
-        console.log('tree started');
         //target div id
         this.target = obj.c_target;
         //building area
@@ -253,7 +252,7 @@ class PickleTree {
      * @param {object} obj
      */
     createNode(obj) {
-        obj.n_id = typeof obj.n_id === 'undefined' ? Date.now() : obj.n_id;
+        /*obj.n_id = typeof obj.n_id === 'undefined' ? Date.now() : obj.n_id;
         let node = {
             //node value
             value: obj.n_id,
@@ -280,7 +279,43 @@ class PickleTree {
             //this method will show node location
             showFamily: () => this.showFamily(node)
 
+        }*/
+        let id = Date.now();
+        let node = {
+            //node value
+            value: id,
+            //node id
+            id: 'node_' + id,
+            //node title
+            title: 'untitled ' + id,
+            //node html elements
+            elements: [],
+            //node parent element
+            parent: { id: 0 },
+            //node child element ids
+            childs: [],
+            //childs status (child list opened or not)
+            foldedStatus: this.config.foldedStatus,
+            //check status for node
+            checkStatus: false,
+            //this method will return child nodes
+            getChilds: () => this.getChilds(node),
+            //this method will remove node from dom
+            deleteNode: () => this.deleteNode(node),
+            //this method will toggle node
+            toggleNode: () => this.toggleNode(node),
+            //this method will show node location
+            showFamily: () => this.showFamily(node)
+
         }
+
+        //check setted values here!!
+        for (let key in obj) {
+            if (obj[key] !== undefined) node[key.split('_')[1]] = obj[key];
+
+        }
+
+
 
         //node is added to container
         this.nodeList.push(node);
@@ -435,8 +470,9 @@ class PickleTree {
             let set = (list) => {
                     for (let i = 0; i < list.length; i++) {
                         this.createNode({
+                            n_value: list[i].n_id,
                             n_title: list[i].n_title,
-                            n_id: list[i].n_id,
+                            n_id: 'node_' + list[i].n_id,
                             n_elements: [],
                             n_parent: this.getNode(list[i].n_parentid),
                             n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked

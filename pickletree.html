@@ -15,7 +15,9 @@
 <script>
     const tree = new PickleTree({
         c_target: 'div_tree',
-        //rowCreateCallback: (node) => {},
+        rowCreateCallback: (node) => {
+            //console.log(node)
+        },
         //switchCallback: (node) => console.log(node),
         drawCallback: () => {
             console.log('tree drawed ..');
