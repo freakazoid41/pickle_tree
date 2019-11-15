@@ -252,34 +252,6 @@ class PickleTree {
      * @param {object} obj
      */
     createNode(obj) {
-        /*obj.n_id = typeof obj.n_id === 'undefined' ? Date.now() : obj.n_id;
-        let node = {
-            //node value
-            value: obj.n_id,
-            //node id
-            id: 'node_' + obj.n_id,
-            //node title
-            title: obj.n_title,
-            //node html elements
-            elements: obj.n_elements,
-            //node parent element
-            parent: typeof obj.n_parent === 'undefined' ? { id: 0 } : obj.n_parent,
-            //node child element ids
-            childs: [],
-            //childs status (child list opened or not)
-            foldedStatus: this.config.foldedStatus,
-            //check status for node
-            checkStatus: obj.n_checkStatus,
-            //this method will return child nodes
-            getChilds: () => this.getChilds(node),
-            //this method will remove node from dom
-            deleteNode: () => this.deleteNode(node),
-            //this method will toggle node
-            toggleNode: () => this.toggleNode(node),
-            //this method will show node location
-            showFamily: () => this.showFamily(node)
-
-        }*/
         let id = Date.now();
         let node = {
             //node value
