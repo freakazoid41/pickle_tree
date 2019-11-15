@@ -19,26 +19,30 @@
 ## Example (Optional)
 
 ```javascript
-// code away!
+
 
 const tree = new PickleTree({
         c_target: 'div_tree',
-        c_logMode: false,
-        c_startStatus: true,
-        c_switchMode: true,
-        //rowCreateCallback: (node) => {},
-        switchCallback:(node) => console.log(node),
-        drawCallback: () => {
-            console.log('tree drawed ..');
+        rowCreateCallback: (node) => {
+            //console.log(node)
         },
-        c_config : {
-            foldedStatus:true
+        switchCallback: (node) => {
+            //console.log(node)
+        },
+        drawCallback: () => {
+            //console.log('tree drawed ..');
+        },
+        c_config: {
+            foldedStatus: false,
+            logMode: false,
+            switchMode: true,
+            familyMode: true
         },
         c_data: [{
             n_id: 1,
             n_title: 'falan1',
             n_parentid: 0,
-            n_checked:true
+            n_checked: true
         }, {
             n_id: 2,
             n_title: 'falan2',
@@ -56,6 +60,14 @@ const tree = new PickleTree({
             n_title: 'falan1-2',
             n_parentid: 1
         }, {
+            n_id: 10,
+            n_title: 'falan1-2-1',
+            n_parentid: 5
+        }, {
+            n_id: 11,
+            n_title: 'falan1-2-1-1',
+            n_parentid: 10
+        }, {
             n_id: 6,
             n_title: 'falan2-1',
             n_parentid: 2
@@ -67,10 +79,9 @@ const tree = new PickleTree({
             n_id: 8,
             n_title: 'falan2-3',
             n_parentid: 2
-        }
-        , {
+        }, {
             n_id: 9,
-            n_title: 'falan2-3',
+            n_title: 'falan1-2-2',
             n_parentid: 5
         }]
     });
