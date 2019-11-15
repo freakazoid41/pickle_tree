@@ -73,7 +73,7 @@ const tree = new PickleTree({
 
 ```javascript
 
-    //for getting node from its id :
+    //for getting node from it's id :
     let our_node = tree.getNode('5');
 
     //for deleting node
@@ -82,7 +82,7 @@ const tree = new PickleTree({
     //for toggling
     our_node.toggleNode();
 
-    //for getting its childs
+    //for getting it's childs
     our_node.getChilds();
 
     //for check / uncheck node
