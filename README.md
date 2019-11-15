@@ -4,19 +4,19 @@
 
 > Pickle tree is a tree component written as completely javascript. Just put json file to class constructor and have fun :-D 
 
-> falan böyle gibi gereksiz
+> Pickle tree does't need anything except you !
 
 **Badges will go here**
 
-- falan
-- böyle
-- gibi 
-- gereksiz
+- Simple javascript ability
+- Simple css ability for some style editing for your project
 
 
 
 
-## Example (Optional)
+## Initiation And Using Example 
+
+> Initiate like this :
 
 ```javascript
 
@@ -63,36 +63,49 @@ const tree = new PickleTree({
             n_id: 10,
             n_title: 'falan1-2-1',
             n_parentid: 5
-        }, {
-            n_id: 11,
-            n_title: 'falan1-2-1-1',
-            n_parentid: 10
-        }, {
-            n_id: 6,
-            n_title: 'falan2-1',
-            n_parentid: 2
-        }, {
-            n_id: 7,
-            n_title: 'falan2-2',
-            n_parentid: 2
-        }, {
-            n_id: 8,
-            n_title: 'falan2-3',
-            n_parentid: 2
-        }, {
-            n_id: 9,
-            n_title: 'falan1-2-2',
-            n_parentid: 5
         }]
     });
 ```
 
 ---
 
+> After that you can use some addional events for node like those:
+
+```javascript
+
+    //for getting node from its id :
+    let our_node = tree.getNode('5');
+
+    //for deleting node
+    our_node.deleteNode();
+
+    //for toggling
+    our_node.toggleNode();
+
+    //for getting its childs
+    our_node.getChilds();
+
+    //for check / uncheck node
+    our_node.toggleCheck(true / false);
+
+
+    // for creating new  node manualy
+    let new_node = tree.createNode({
+        n_value: 5,
+        n_title: 'falan gibi 5',
+        n_id: 5,
+        n_elements: [],
+        n_parent: tree.getNode(4),
+        n_checkStatus: false
+    });
+
+```
+
+---
+
 ## Installation
 
-- All the `code` required to get started
-- Images of what it should look like
+- Just include js and css file to your project then you can use it
 
 ### Clone
 

@@ -277,13 +277,19 @@ class PickleTree {
             //this method will toggle node
             toggleNode: () => this.toggleNode(node),
             //this method will show node location
-            showFamily: () => this.showFamily(node)
+            showFamily: () => this.showFamily(node),
+            //check node
+            toggleCheck: (status) => {
+                node.checkStatus = status;
+                this.checkNode(node);
+            }
 
         }
 
         //check setted values here!!
         for (let key in obj) {
             if (obj[key] !== undefined) node[key.split('_')[1]] = obj[key];
+            if (key === 'n_id') node['id'] = 'node_' + obj['n_id'];
 
         }
 
@@ -453,7 +459,7 @@ class PickleTree {
                         this.createNode({
                             n_value: list[i].n_id,
                             n_title: list[i].n_title,
-                            n_id: 'node_' + list[i].n_id,
+                            n_id: list[i].n_id,
                             n_elements: [],
                             n_parent: this.getNode(list[i].n_parentid),
                             n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
