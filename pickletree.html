@@ -35,11 +35,18 @@
             switchMode: true,
             familyMode: true
         },
+
         c_data: [{
             n_id: 1,
             n_title: 'falan1',
             n_parentid: 0,
-            n_checked: true
+            n_checked: true,
+            n_elements : [{
+                icon:'fa fa-edit',
+                onClick : (node) => {
+                    console.log(node);
+                }
+            }],
         }, {
             n_id: 2,
             n_title: 'falan2',

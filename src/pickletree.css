@@ -89,3 +89,9 @@ ul li a {
 
 
 /* Border styles end */
+
+/* menu icon */
+.menuIcon {
+    margin-left: auto;
+    color: black;
+}

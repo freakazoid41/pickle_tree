@@ -52,6 +52,8 @@ class PickleTree {
             foldedIcon: 'fa fa-plus',
             //unfold icon
             unFoldedIcon: 'fa fa-minus',
+            //menu icon
+            menuIcon: 'fa fa-list-ul',
             //start status is collapsed or not
             foldedStatus: false,
 
@@ -246,6 +248,7 @@ class PickleTree {
     //#endregion
 
 
+    //#region Node Creator
 
     /**
      * creating node
@@ -285,12 +288,11 @@ class PickleTree {
             }
 
         }
-
+      
         //check setted values here!!
         for (let key in obj) {
             if (obj[key] !== undefined) node[key.split('_')[1]] = obj[key];
             if (key === 'n_id') node['id'] = 'node_' + obj['n_id'];
-
         }
 
 
@@ -390,7 +392,26 @@ class PickleTree {
             div_item.appendChild(sw_item);
         }
 
+        //if node has extra elements
+        if(node.elements.length>0){
+            //add menu button to end
+            let a_item = document.createElement('a');
+            let i_item = document.createElement('i');
+            //set icon for menu
+            this.config.menuIcon =this.config.menuIcon.split(' ');
+            for (let i = 0; i < this.config.menuIcon.length; i++) {
+                i_item.classList.add(this.config.menuIcon[i]);
+            }
 
+            a_item.id='a_me_'+node.id;
+            a_item.appendChild(i_item);
+            a_item.href='javascript:;';
+            a_item.classList.add('menuIcon');
+            
+            //icon added to div
+            div_item.appendChild(a_item);
+
+        }
 
         li_item.appendChild(div_item);
         //set ul tag to li item
@@ -408,6 +429,16 @@ class PickleTree {
             //then put item
             document.getElementById('c_' + node.parent.id).appendChild(li_item)
         }
+        
+
+        //set node events
+        this.setNodeEvents(node);
+
+        //draw callback  method
+        if (typeof this.rowCreateCallback == "function") this.rowCreateCallback(node);
+    }
+
+    setNodeEvents(node){
         //toggle event for node
         document.getElementById('a_toggle_' + node.id).addEventListener('click', e => {
             //toggle item childs
@@ -427,9 +458,14 @@ class PickleTree {
             });
         }
 
-        //draw callback  method
-        if (typeof this.rowCreateCallback == "function") this.rowCreateCallback(node);
+        //menu toggle event for node
+        if (node.elements.length>0) {
+            document.getElementById('a_me_'+ node.id).addEventListener('click', e => {
+                this.drawMenu(e)
+            });
+        }
     }
+
 
     /**
      * this method will draw multiple data 
@@ -460,7 +496,7 @@ class PickleTree {
                             n_value: list[i].n_id,
                             n_title: list[i].n_title,
                             n_id: list[i].n_id,
-                            n_elements: [],
+                            n_elements:list[i].n_elements,
                             n_parent: this.getNode(list[i].n_parentid),
                             n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
                         });
@@ -477,4 +513,12 @@ class PickleTree {
         this.drawCallback();
 
     }
+
+    //#endregion
+
+    //#region Menu
+    drawMenu(element){
+
+    }
+    //#endregion
 }
