@@ -69,7 +69,7 @@ class PickleTree {
         this.config = config;
 
 
-        document.getElementById(this.target).innerHTML = '<ul id="tree_picklemain"></ul>';
+        document.getElementById(this.target).innerHTML = '<div id="div_pickletree"><ul id="tree_picklemain"></ul></div>';
         this.area = document.getElementById('tree_picklemain');
         this.log('tree build started..');
         this.drawData();
@@ -267,7 +267,7 @@ class PickleTree {
             elements: [],
             //node parent element
             parent: { id: 0 },
-            //node child element ids
+            //nomenuContde child element ids
             childs: [],
             //childs status (child list opened or not)
             foldedStatus: this.config.foldedStatus,
@@ -288,7 +288,7 @@ class PickleTree {
             }
 
         }
-      
+
         //check setted values here!!
         for (let key in obj) {
             if (obj[key] !== undefined) node[key.split('_')[1]] = obj[key];
@@ -384,30 +384,28 @@ class PickleTree {
             sw_item.id = 'sw_' + node.id;
 
             ck_item.value = node.value;
-
             //if item created as checked
             ck_item.checked = node.checkStatus;
 
             //switch is added to li element
             div_item.appendChild(sw_item);
         }
-
         //if node has extra elements
-        if(node.elements.length>0){
+        if (node.elements.length > 0) {
             //add menu button to end
             let a_item = document.createElement('a');
             let i_item = document.createElement('i');
             //set icon for menu
-            this.config.menuIcon =this.config.menuIcon.split(' ');
+            this.config.menuIcon = this.config.menuIcon.split(' ');
             for (let i = 0; i < this.config.menuIcon.length; i++) {
                 i_item.classList.add(this.config.menuIcon[i]);
             }
 
-            a_item.id='a_me_'+node.id;
+            a_item.id = 'a_me_' + node.id;
             a_item.appendChild(i_item);
-            a_item.href='javascript:;';
+            a_item.href = 'javascript:;';
             a_item.classList.add('menuIcon');
-            
+
             //icon added to div
             div_item.appendChild(a_item);
 
@@ -429,7 +427,7 @@ class PickleTree {
             //then put item
             document.getElementById('c_' + node.parent.id).appendChild(li_item)
         }
-        
+
 
         //set node events
         this.setNodeEvents(node);
@@ -438,7 +436,7 @@ class PickleTree {
         if (typeof this.rowCreateCallback == "function") this.rowCreateCallback(node);
     }
 
-    setNodeEvents(node){
+    setNodeEvents(node) {
         //toggle event for node
         document.getElementById('a_toggle_' + node.id).addEventListener('click', e => {
             //toggle item childs
@@ -459,9 +457,9 @@ class PickleTree {
         }
 
         //menu toggle event for node
-        if (node.elements.length>0) {
-            document.getElementById('a_me_'+ node.id).addEventListener('click', e => {
-                this.drawMenu(e)
+        if (node.elements.length > 0) {
+            document.getElementById('a_me_' + node.id).addEventListener('click', e => {
+                this.getMenu(e.currentTarget, this.getNode(e.currentTarget.id.split('_')[3]));
             });
         }
     }
@@ -496,7 +494,7 @@ class PickleTree {
                             n_value: list[i].n_id,
                             n_title: list[i].n_title,
                             n_id: list[i].n_id,
-                            n_elements:list[i].n_elements,
+                            n_elements: list[i].n_elements,
                             n_parent: this.getNode(list[i].n_parentid),
                             n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
                         });
@@ -517,8 +515,47 @@ class PickleTree {
     //#endregion
 
     //#region Menu
-    drawMenu(element){
 
+    getMenu(element, node) {
+        //get element location
+        let x = element.getBoundingClientRect();
+
+        if (screen.width - x.x < 200) x.x = x.x - (screen.width - x.x);
+        let origin = {
+            node: node,
+            left: x.x,
+            top: x.y + x.height
+        };
+        //draw menu
+        this.drawMenu(origin)
     }
+
+    drawMenu(obj) {
+        //create menu div
+        let menu_item = document.createElement('div');
+        menu_item.id = 'div_menu_' + obj.node.id;
+        menu_item.classList.add('menuCont');
+        menu_item.innerHTML = `<span>faaln1 Boyle Gibi</span>
+                                <span>faaln1</span>
+                                <span>faaln1</span>
+                                <span>faaln1</span>
+                                <span>faaln1</span>
+                                `;
+        menu_item.style.left = obj.left + 'px';
+        menu_item.style.top = obj.top + 'px';
+
+        document.body.appendChild(menu_item);
+
+
+
+
+
+
+
+
+        //this.menu.style.left = obj.left + 'px';
+        //this.menu.style.top = obj.top + 'px';
+    }
+
     //#endregion
 }

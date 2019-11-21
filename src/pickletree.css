@@ -90,8 +90,31 @@ ul li a {
 
 /* Border styles end */
 
+
 /* menu icon */
+
 .menuIcon {
     margin-left: auto;
     color: black;
+}
+
+
+/* menu container */
+
+.menuCont {
+    display: flex;
+    flex-direction: column;
+    background-color: #efefef;
+    border: 1px solid #ccc;
+    color: #444;
+    position: fixed;
+}
+
+.menuCont span {
+    padding: 10px 10px 10px 10px;
+    border-bottom: 1px solid #9e9e9e;
+}
+
+.menuCont span:hover {
+    background: #bdbdbd;
 }
