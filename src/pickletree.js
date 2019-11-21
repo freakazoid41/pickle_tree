@@ -22,10 +22,34 @@ class PickleTree {
         this.data = obj.c_data;
         //build tree
         this.build(obj.c_config);
+
+        //start events 
+        this.staticEvents();
     }
 
 
     //#region Helper Methods
+
+    /**
+     * this method will contains static events for tree
+     */
+    staticEvents() {
+        //close menu 
+        document.body.addEventListener('click', e => {
+            let elm = e.target.parentNode;
+            //close if is not menu icon
+            if (!elm.classList.contains('menuIcon')) {
+                let menu_item = document.querySelector('.menuCont');
+                //remove menu from dom
+                if (menu_item !== null) menu_item.outerHTML = '';
+            } else {
+                //menu toggle event for node
+                this.getMenu(e.target, this.getNode(elm.id.split('_')[3]));
+            }
+        });
+    }
+
+
 
     /**
      * 
@@ -455,13 +479,6 @@ class PickleTree {
                 }
             });
         }
-
-        //menu toggle event for node
-        if (node.elements.length > 0) {
-            document.getElementById('a_me_' + node.id).addEventListener('click', e => {
-                this.getMenu(e.currentTarget, this.getNode(e.currentTarget.id.split('_')[3]));
-            });
-        }
     }
 
 
@@ -519,8 +536,6 @@ class PickleTree {
     getMenu(element, node) {
         //get element location
         let x = element.getBoundingClientRect();
-
-        if (screen.width - x.x < 200) x.x = x.x - (screen.width - x.x);
         let origin = {
             node: node,
             left: x.x,
@@ -533,18 +548,20 @@ class PickleTree {
     drawMenu(obj) {
         //create menu div
         let menu_item = document.createElement('div');
+        //add to body
+        document.body.appendChild(menu_item);
         menu_item.id = 'div_menu_' + obj.node.id;
         menu_item.classList.add('menuCont');
-        menu_item.innerHTML = `<span>faaln1 Boyle Gibi</span>
+        menu_item.innerHTML = ` <span><i class="fa fa-edit"></i> faaln1 Boyle Gibi</span>
                                 <span>faaln1</span>
                                 <span>faaln1</span>
                                 <span>faaln1</span>
                                 <span>faaln1</span>
                                 `;
-        menu_item.style.left = obj.left + 'px';
+        //calculate location
+        if (screen.width - obj.left < menu_item.offsetWidth) menu_item.style.left = (obj.left - menu_item.offsetWidth) + 'px';
         menu_item.style.top = obj.top + 'px';
 
-        document.body.appendChild(menu_item);
 
 
 
@@ -553,8 +570,9 @@ class PickleTree {
 
 
 
-        //this.menu.style.left = obj.left + 'px';
-        //this.menu.style.top = obj.top + 'px';
+
+
+
     }
 
     //#endregion
