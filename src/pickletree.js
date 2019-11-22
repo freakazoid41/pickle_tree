@@ -559,7 +559,11 @@ class PickleTree {
                                 <span>faaln1</span>
                                 `;
         //calculate location
-        if (screen.width - obj.left < menu_item.offsetWidth) menu_item.style.left = (obj.left - menu_item.offsetWidth) + 'px';
+        if (screen.width - obj.left < menu_item.offsetWidth){
+            menu_item.style.left = (obj.left - menu_item.offsetWidth) + 'px';
+        } else{
+            menu_item.style.left = obj.left + 'px';
+        }
         menu_item.style.top = obj.top + 'px';
 
 
