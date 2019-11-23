@@ -71,7 +71,10 @@ class PickleTree {
             //switch mode
             switchMode: false,
             //family mode
-            familyMode: false,
+            //for child
+            autoChild :true,
+            //for parent
+            autoParent : true,
             //fold icon
             foldedIcon: 'fa fa-plus',
             //unfold icon
@@ -210,9 +213,7 @@ class PickleTree {
         //trigger callback if exists
         if (typeof this.switchCallback == "function") this.switchCallback(node);
         //check html element if family mode is open
-        if (this.config.familyMode) {
-            document.getElementById('ck_' + node.id).checked = node.checkStatus;
-        }
+        document.getElementById('ck_' + node.id).checked = node.checkStatus;
     }
 
     /**
@@ -247,9 +248,8 @@ class PickleTree {
                 }
             }
         }
-
-        childCheck(node);
-        if (node.checkStatus) parentCheck(node);
+        if (this.config.autoChild) childCheck(node);
+        if (node.checkStatus && this.config.autoParent) parentCheck(node);
     }
 
     /**
@@ -472,7 +472,7 @@ class PickleTree {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
                 let node = this.getNode(e.currentTarget.id.split('_')[2]);
                 node.checkStatus = e.currentTarget.checked;
-                if (this.config.familyMode) {
+                if (this.config.autoChild || this.config.autoParent) {
                     this.checkNodeFamily(node);
                 } else {
                     this.checkNode(node);
@@ -546,37 +546,40 @@ class PickleTree {
     }
 
     drawMenu(obj) {
-        //create menu div
-        let menu_item = document.createElement('div');
-        //add to body
-        document.body.appendChild(menu_item);
-        menu_item.id = 'div_menu_' + obj.node.id;
-        menu_item.classList.add('menuCont');
-        menu_item.innerHTML = ` <span><i class="fa fa-edit"></i> faaln1 Boyle Gibi</span>
-                                <span>faaln1</span>
-                                <span>faaln1</span>
-                                <span>faaln1</span>
-                                <span>faaln1</span>
-                                `;
-        //calculate location
-        if (screen.width - obj.left < menu_item.offsetWidth){
-            menu_item.style.left = (obj.left - menu_item.offsetWidth) + 'px';
-        } else{
-            menu_item.style.left = obj.left + 'px';
+        //check if menu already exist
+        if(document.getElementById('div_menu_' + obj.node.id)===null){
+            //create menu div
+            let menu_item = document.createElement('div');
+            //add to body
+            document.body.appendChild(menu_item);
+            menu_item.id = 'div_menu_' + obj.node.id;
+            menu_item.classList.add('menuCont');
+
+            //for each menu item
+            let span_item ;
+            let icon;
+            for(let i=0;i<obj.node.elements.length;i++){
+                span_item = document.createElement('span');
+                span_item.setAttribute('data-node',obj.node.id);
+                icon = obj.node.elements[i].icon.trim().length > 0 ? '<i class="'+obj.node.elements[i].icon.trim()+'"></i>' : '';
+                span_item.innerHTML = icon + ' '+obj.node.elements[i].title.trim();
+
+                menu_item.appendChild(span_item);
+
+                //then add click event
+                span_item.addEventListener('click',e => {
+                    obj.node.elements[i].onClick(this.getNode(e.target.getAttribute('data-node').split('_')[1]));
+                });
+            }
+            //calculate location
+            if (screen.width - obj.left < menu_item.offsetWidth){
+                menu_item.style.left = (obj.left - menu_item.offsetWidth) + 'px';
+            } else{
+                menu_item.style.left = obj.left + 'px';
+            }
+            menu_item.style.top = obj.top + 'px';
         }
-        menu_item.style.top = obj.top + 'px';
-
-
-
-
-
-
-
-
-
-
-
-
+        
     }
 
     //#endregion
