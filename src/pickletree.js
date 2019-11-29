@@ -83,6 +83,8 @@ class PickleTree {
             menuIcon: 'fa fa-list-ul',
             //start status is collapsed or not
             foldedStatus: false,
+            //drag 
+            drag:false
 
         }
 
