@@ -30,10 +30,15 @@
             //console.log('tree drawed ..');
         },
         c_config: {
+            //start as folded or unfolded
             foldedStatus: false,
+            //for logging
             logMode: false,
+            //for switch element
             switchMode: true,
+            //for automaticly select childs
             autoChild :true,
+            //for automaticly select parents
             autoParent : true,
         },
         c_data: [{
@@ -44,6 +49,7 @@
             n_elements : [{
                 icon:'fa fa-edit',
                 title:'Edit',
+                //context button click event
                 onClick : (node) => {
                     console.log('edit - '+node.id);
                 }

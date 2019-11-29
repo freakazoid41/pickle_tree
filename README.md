@@ -33,16 +33,36 @@ const tree = new PickleTree({
             //console.log('tree drawed ..');
         },
         c_config: {
+            //start as folded or unfolded
             foldedStatus: false,
+            //for logging
             logMode: false,
+            //for switch element
             switchMode: true,
-            familyMode: true
+            //for automaticly select childs
+            autoChild :true,
+            //for automaticly select parents
+            autoParent : true,
         },
         c_data: [{
             n_id: 1,
             n_title: 'falan1',
             n_parentid: 0,
-            n_checked: true
+            n_checked: true,
+            n_elements : [{
+                icon:'fa fa-edit',
+                title:'Edit',
+                //context button click event
+                onClick : (node) => {
+                    console.log('edit - '+node.id);
+                }
+            },{
+                icon:'fa fa-trash',
+                title:'Delete',
+                onClick : (node) => {
+                    console.log('delete - '+node.id);
+                }
+            }],
         }, {
             n_id: 2,
             n_title: 'falan2',
