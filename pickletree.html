@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <n_title>pickletree Simple Example</n_title>
+    <title>Pickle Tree</title>
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="src/pickletree.css">
 
@@ -37,29 +37,29 @@
             //for switch element
             switchMode: true,
             //for automaticly select childs
-            autoChild :true,
+            autoChild: true,
             //for automaticly select parents
-            autoParent : true,
+            autoParent: true,
             //for drag / drop
-            drag:true
+            drag: true
         },
         c_data: [{
             n_id: 1,
             n_title: 'falan1',
             n_parentid: 0,
             n_checked: true,
-            n_elements : [{
-                icon:'fa fa-edit',
-                title:'Edit',
+            n_elements: [{
+                icon: 'fa fa-edit',
+                title: 'Edit',
                 //context button click event
-                onClick : (node) => {
-                    console.log('edit - '+node.id);
+                onClick: (node) => {
+                    console.log('edit - ' + node.id);
                 }
-            },{
-                icon:'fa fa-trash',
-                title:'Delete',
-                onClick : (node) => {
-                    console.log('delete - '+node.id);
+            }, {
+                icon: 'fa fa-trash',
+                title: 'Delete',
+                onClick: (node) => {
+                    console.log('delete - ' + node.id);
                 }
             }],
         }, {
