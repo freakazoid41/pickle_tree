@@ -190,7 +190,7 @@ class PickleTree {
         let elm = document.getElementById(node.id);
         if (node.childs.length > 0) {
             for (let i = 0; i < node.childs.length; i++) {
-                this.deleteNode(this.getNode(node.childs[i]));
+                this.deleteNode(this.getNode(node.childs[i].split('_')[1]));
             }
         }
         elm.parentNode.removeChild(elm);
