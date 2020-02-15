@@ -146,3 +146,25 @@ ul li a {
 .menuCont span:hover {
     background: #dcdcdc;
 }
+
+
+/** drag styles **/
+
+.drag-handler {
+    color: #ef606b;
+}
+
+.drag-handler i {
+    pointer-events: none;
+}
+
+.drag_triggered {
+    border: 3px dotted red;
+}
+
+#div_ddetail {
+    font-size: larger;
+}
+
+
+/**  ////   // */

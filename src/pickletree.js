@@ -47,6 +47,43 @@ class PickleTree {
                 this.getMenu(e.target, this.getNode(elm.id.split('_')[3]));
             }
         });
+        //drag - drop events
+        if (this.config.drag) {
+            //drag start
+            document.getElementById('div_pickletree').addEventListener("drag", e => {
+                //get node info for drag
+                //show hidden tooltip
+                this.div_ddetail.style.display = '';
+                //set cordinates as mouse side
+                this.div_ddetail.style.top = (e.clientY) + 'px';
+                this.div_ddetail.style.left = (e.clientX + 40) + 'px';
+                //set title to inside
+                this.div_ddetail.innerHTML = e.target.getAttribute('drag-title');
+            });
+            //drag end
+            document.getElementById('div_pickletree').addEventListener("dragend", e => {
+                //make tootlip invisable again
+                this.div_ddetail.style.display = 'none';
+                //clear old targets
+                this.clearDebris();
+                //set new parent to dragged element
+                let old_node = this.getNode(e.target.id.split('node_')[1]);
+                //set new parent
+                old_node.parent = this.getNode(this.drag_target);
+                //update element
+                old_node.updateNode();
+            });
+            //drag location
+            document.getElementById('div_pickletree').addEventListener("dragenter", (e) => {
+                this.clearDebris();
+                if (e.target.classList.contains("drop_target")) {
+                    e.target.classList.add('drag_triggered');
+                    //this is for updating node parent to current
+                    this.drag_target = parseInt(e.target.id.split('node_')[1]);
+                }
+            });
+
+        }
     }
 
 
@@ -65,16 +102,17 @@ class PickleTree {
      * Building main details
      */
     build(c_config) {
-        let config = {
+        //set default config
+        this.config = {
             //logs are open or close
             logMode: false,
             //switch mode
             switchMode: false,
             //family mode
             //for child
-            autoChild :true,
+            autoChild: true,
             //for parent
-            autoParent : true,
+            autoParent: true,
             //fold icon
             foldedIcon: 'fa fa-plus',
             //unfold icon
@@ -84,19 +122,17 @@ class PickleTree {
             //start status is collapsed or not
             foldedStatus: false,
             //drag 
-            drag:false
+            drag: false
 
         }
 
         //check config here!!
-        for (let key in c_config) {
-            config[key] = c_config[key];
+        for (let key in this.config) {
+
+            if (c_config[key] !== undefined) {
+                this.config[key] = c_config[key];
+            }
         }
-
-
-        //set config data
-        this.config = config;
-
 
         document.getElementById(this.target).innerHTML = '<div id="div_pickletree"><ul id="tree_picklemain"></ul></div>';
         this.area = document.getElementById('tree_picklemain');
@@ -132,6 +168,21 @@ class PickleTree {
 
     //#endregion
 
+    //#region drag - drop events
+    clearDebris() {
+        //first clean all entered areas
+        let elms = document.querySelectorAll('.drag_triggered');
+        for (let i = 0; i < elms.length; i++) {
+            elms[i].classList.remove('drag_triggered');
+        }
+    }
+
+
+    //#endregion
+
+
+
+
     //#region Node Events
     /**
      * get child nodes list of node
@@ -141,7 +192,7 @@ class PickleTree {
         let list = [];
         for (let i = 0; i < this.nodeList.length; i++) {
             if (node.childs.includes(this.nodeList[i].id)) {
-                list.push(this.getNode(this.nodeList[i].id));
+                list.push(this.nodeList[i]);
             }
         }
         this.log('node childs returned..');
@@ -187,10 +238,13 @@ class PickleTree {
      * @param {object} node 
      */
     deleteNode(node) {
+        //remove node from old parent's child data !!!!
+
         let elm = document.getElementById(node.id);
-        if (node.childs.length > 0) {
-            for (let i = 0; i < node.childs.length; i++) {
-                this.deleteNode(this.getNode(node.childs[i].split('_')[1]));
+        let childs = node.getChilds();
+        if (childs.length > 0) {
+            for (let i = 0; i < childs.length; i++) {
+                this.deleteNode(childs[i]);
             }
         }
         elm.parentNode.removeChild(elm);
@@ -293,7 +347,7 @@ class PickleTree {
             elements: [],
             //node parent element
             parent: { id: 0 },
-            //nomenuContde child element ids
+            // child element ids
             childs: [],
             //childs status (child list opened or not)
             foldedStatus: this.config.foldedStatus,
@@ -303,6 +357,8 @@ class PickleTree {
             getChilds: () => this.getChilds(node),
             //this method will remove node from dom
             deleteNode: () => this.deleteNode(node),
+            //this method will update node
+            updateNode: () => this.updateNode(node),
             //this method will toggle node
             toggleNode: () => this.toggleNode(node),
             //this method will show node location
@@ -334,6 +390,36 @@ class PickleTree {
     }
 
     /**
+     * this method will update node
+     * !! id is recommended
+     */
+    updateNode(node) {
+        //first remove old node
+        console.log(this.getNode(node.id.split('_')[1]))
+        this.getNode(node.id.split('_')[1]).deleteNode();
+        //console.log(node);
+        //add new node to container
+        //this.nodeList.push(node);
+        //draw new node with childs
+        let set = (data) => {
+            this.drawNode(data);
+            let childs = data.getChilds();
+            if (childs.length > 0) {
+                for (let i = 0; i < childs.length; i++) {
+                    set(childs[i]);
+                }
+
+            }
+        }
+        set(node);
+        //log
+        //this.log('Node is created (' + node.id + ')');
+        //return node
+        return node;
+    }
+
+
+    /**
      * 
      * @param {object} node object for creating html element
      */
@@ -357,7 +443,28 @@ class PickleTree {
         //node group item 
         let div_item = document.createElement("div");
 
+        //make node dragable
+        if (this.config.drag) {
+            //add drag button to start
+            let a_ditem = document.createElement('a');
+            let i_ditem = document.createElement('i');
+            //set icon drag button
+            i_ditem.classList.add('fa');
+            i_ditem.classList.add('fa-bars');
+            a_ditem.classList.add('drag-handler');
 
+
+            a_ditem.id = 'a_dr_' + node.id;
+            a_ditem.appendChild(i_ditem);
+            a_ditem.href = 'javascript:;';
+            a_ditem.setAttribute('dragable', true);
+            a_ditem.setAttribute('drag-title', node.title)
+                //icon added to div
+            div_item.appendChild(a_ditem);
+            div_item.classList.add('drop_target')
+                /*div_item.setAttribute('dragable', true);
+                div_item.setAttribute('drag-title', node.title);*/
+        }
 
         //set i item id
         i_item.id = 'i_' + node.id;
@@ -448,6 +555,7 @@ class PickleTree {
             //put item to area
             this.area.appendChild(li_item);
         } else {
+
             //if has parent set to parents childs
             this.setChildNodes(node);
             //then put item
@@ -508,24 +616,37 @@ class PickleTree {
 
             //then create nodes
             let set = (list) => {
-                    for (let i = 0; i < list.length; i++) {
-                        this.createNode({
-                            n_value: list[i].n_id,
-                            n_title: list[i].n_title,
-                            n_id: list[i].n_id,
-                            n_elements: list[i].n_elements,
-                            n_parent: this.getNode(list[i].n_parentid),
-                            n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
-                        });
-                        if (list[i].Child) {
-                            set(list[i].Child);
-                        }
+                for (let i = 0; i < list.length; i++) {
+                    this.createNode({
+                        n_value: list[i].n_id,
+                        n_title: list[i].n_title,
+                        n_id: list[i].n_id,
+                        n_elements: list[i].n_elements,
+                        n_parent: this.getNode(list[i].n_parentid),
+                        n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
+                    });
+                    if (list[i].Child) {
+                        set(list[i].Child);
                     }
                 }
-                //start chain
+            }
+
+            //start chain
             set(order(this.data));
 
         }
+
+        //at this point if drag is active we need to create element for dragable element info
+        if (this.config.drag) {
+            this.div_ddetail = document.createElement('div');
+            this.div_ddetail.id = 'div_ddetail';
+            this.div_ddetail.style.position = 'absolute';
+            this.div_ddetail.style.display = 'none';
+            this.div_ddetail.innerHTML = 'No Element';
+            document.querySelector('body').appendChild(this.div_ddetail);
+        }
+
+
         //start drawcallback
         this.drawCallback();
 
@@ -549,7 +670,7 @@ class PickleTree {
 
     drawMenu(obj) {
         //check if menu already exist
-        if(document.getElementById('div_menu_' + obj.node.id)===null){
+        if (document.getElementById('div_menu_' + obj.node.id) === null) {
             //create menu div
             let menu_item = document.createElement('div');
             //add to body
@@ -558,30 +679,30 @@ class PickleTree {
             menu_item.classList.add('menuCont');
 
             //for each menu item
-            let span_item ;
+            let span_item;
             let icon;
-            for(let i=0;i<obj.node.elements.length;i++){
+            for (let i = 0; i < obj.node.elements.length; i++) {
                 span_item = document.createElement('span');
-                span_item.setAttribute('data-node',obj.node.id);
-                icon = obj.node.elements[i].icon.trim().length > 0 ? '<i class="'+obj.node.elements[i].icon.trim()+'"></i>' : '';
-                span_item.innerHTML = icon + ' '+obj.node.elements[i].title.trim();
+                span_item.setAttribute('data-node', obj.node.id);
+                icon = obj.node.elements[i].icon.trim().length > 0 ? '<i class="' + obj.node.elements[i].icon.trim() + '"></i>' : '';
+                span_item.innerHTML = icon + ' ' + obj.node.elements[i].title.trim();
 
                 menu_item.appendChild(span_item);
 
                 //then add click event
-                span_item.addEventListener('click',e => {
+                span_item.addEventListener('click', e => {
                     obj.node.elements[i].onClick(this.getNode(e.target.getAttribute('data-node').split('_')[1]));
                 });
             }
             //calculate location
-            if (screen.width - obj.left < menu_item.offsetWidth){
+            if (screen.width - obj.left < menu_item.offsetWidth) {
                 menu_item.style.left = (obj.left - menu_item.offsetWidth) + 'px';
-            } else{
+            } else {
                 menu_item.style.left = obj.left + 'px';
             }
             menu_item.style.top = obj.top + 'px';
         }
-        
+
     }
 
     //#endregion
