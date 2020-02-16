@@ -18,6 +18,10 @@ class PickleTree {
         this.drawCallback = obj.drawCallback;
         //switch callback
         this.switchCallback = obj.switchCallback;
+        //drag callback 
+        this.dragCallback = obj.dragCallback;
+        //drop callback 
+        this.dropCallback = obj.dropCallback;
         //tree json data
         this.data = obj.c_data;
         //build tree
@@ -50,6 +54,12 @@ class PickleTree {
         //drag - drop events
         if (this.config.drag) {
             //drag start
+            document.getElementById('div_pickletree').addEventListener("dragstart", e=>{
+                //drag callback
+                this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
+            });
+
+            //draging
             document.getElementById('div_pickletree').addEventListener("drag", e => {
                 //get node info for drag
                 //show hidden tooltip
@@ -59,6 +69,7 @@ class PickleTree {
                 this.div_ddetail.style.left = (e.clientX + 40) + 'px';
                 //set title to inside
                 this.div_ddetail.innerHTML = e.target.getAttribute('drag-title');
+                
             });
             //drag end
             document.getElementById('div_pickletree').addEventListener("dragend", e => {
@@ -66,9 +77,6 @@ class PickleTree {
                 this.div_ddetail.style.display = 'none';
                 //clear old targets
                 this.clearDebris();
-               
-                console.log(e.target.id.split('node_')[1])
-                console.log(this.drag_target)
                 let node = this.nodeList[parseInt(e.target.id.split('node_')[1])];
                 //set old parent for cleaning
                 node.old_parent = node.parent;
@@ -81,6 +89,8 @@ class PickleTree {
                 }
                 //set new parent for dragging
                 node.updateNode();
+                //drop callback
+                this.dropCallback(node);
             });
             //drag location
             document.getElementById('div_pickletree').addEventListener("dragenter", (e) => {
@@ -164,7 +174,6 @@ class PickleTree {
      * @param {object} node 
      */
     setChildNodes(node) {
-        console.log(node);
         //update node parent
         for(let key in this.nodeList){
             if (this.nodeList[key].id === node.parent.id) {
@@ -407,7 +416,7 @@ class PickleTree {
         //console.log(this.getNode(node.id.split('_')[1]))
         this.getNode(node.id.split('_')[1]).deleteNode();
         //clear old parent's childs
-        if(node.old_parent.id!==0){
+        if(node.old_parent !== undefined && node.old_parent.id!==0){
             this.nodeList[node.old_parent.value].childs = this.nodeList[node.old_parent.value].childs.filter(x=>{
                 return x!==node.id;
             });

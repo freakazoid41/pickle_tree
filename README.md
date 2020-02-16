@@ -32,6 +32,13 @@ const tree = new PickleTree({
         drawCallback: () => {
             //console.log('tree drawed ..');
         },
+        dragCallback: (node) => {
+            console.log(node);
+        },
+        dropCallback: (node) => {
+            //retuns node with new parent and old parent in 'old_parent' key!!
+            console.log(node);
+        },
         c_config: {
             //start as folded or unfolded
             foldedStatus: false,
@@ -43,6 +50,8 @@ const tree = new PickleTree({
             autoChild :true,
             //for automaticly select parents
             autoParent : true,
+            //for drag / drop
+            drag: true
         },
         c_data: [{
             n_id: 1,
