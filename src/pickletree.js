@@ -415,8 +415,8 @@ class PickleTree {
         //first remove old node
         //console.log(this.getNode(node.id.split('_')[1]))
         this.getNode(node.id.split('_')[1]).deleteNode();
-        //clear old parent's childs
-        if(node.old_parent !== undefined && node.old_parent.id!==0){
+        //clear old parent's childs if drag is active and old parent info is exist
+        if(this.config.drag && node.old_parent !== undefined && node.old_parent.id!==0){
             this.nodeList[node.old_parent.value].childs = this.nodeList[node.old_parent.value].childs.filter(x=>{
                 return x!==node.id;
             });
