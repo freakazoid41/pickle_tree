@@ -40,13 +40,12 @@ class PickleTree {
     staticEvents() {
         //close menu 
         document.body.addEventListener('click', e => {
-            let elm = e.target.parentNode;
-            //close if is not menu icon
-            if (!elm.classList.contains('menuIcon')) {
-                let menu_item = document.querySelector('.menuCont');
-                //remove menu from dom
-                if (menu_item !== null) menu_item.outerHTML = '';
-            } else {
+            let elm = e.target;
+            //close all first 
+            document.querySelectorAll('.menuCont').forEach(menu=>{
+                menu.outerHTML = '';
+            });
+            if (elm.classList.contains('menuIcon')) {
                 //menu toggle event for node
                 this.getMenu(e.target, this.getNode(elm.id.split('_')[3]));
             }
@@ -141,7 +140,7 @@ class PickleTree {
             //unfold icon
             unFoldedIcon: 'fa fa-minus',
             //menu icon
-            menuIcon: 'fa fa-list-ul',
+            menuIcon: ['fa','fa-list-ul'],
             //start status is collapsed or not
             foldedStatus: false,
             //drag 
@@ -560,9 +559,7 @@ class PickleTree {
             let a_item = document.createElement('a');
             let i_item = document.createElement('i');
             //set icon for menu
-            if(typeof this.config.menuIcon !== "object"){
-                this.config.menuIcon = this.config.menuIcon.split(' ');
-            }
+           
             for (let i = 0; i < this.config.menuIcon.length; i++) {
                 i_item.classList.add(this.config.menuIcon[i]);
             }
@@ -571,7 +568,6 @@ class PickleTree {
             a_item.appendChild(i_item);
             a_item.href = 'javascript:;';
             a_item.classList.add('menuIcon');
-
             //icon added to div
             div_item.appendChild(a_item);
 
