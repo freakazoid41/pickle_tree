@@ -163,7 +163,18 @@ ul li a {
 }
 
 #div_ddetail {
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    z-index: 1;
+}
+
+#div_ddetail span {
     font-size: larger;
+    margin: 3px 5px 3px 5px;
 }
 
 

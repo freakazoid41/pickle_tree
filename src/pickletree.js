@@ -42,7 +42,7 @@ class PickleTree {
         document.body.addEventListener('click', e => {
             let elm = e.target;
             //close all first 
-            document.querySelectorAll('.menuCont').forEach(menu=>{
+            document.querySelectorAll('.menuCont').forEach(menu => {
                 menu.outerHTML = '';
             });
             if (elm.classList.contains('menuIcon')) {
@@ -53,9 +53,9 @@ class PickleTree {
         //drag - drop events
         if (this.config.drag) {
             //drag start
-            document.getElementById('div_pickletree').addEventListener("dragstart", e=>{
+            document.getElementById('div_pickletree').addEventListener("dragstart", e => {
                 //drag callback
-                if(this.dragCallback !== undefined){
+                if (this.dragCallback !== undefined) {
                     this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
                 }
             });
@@ -69,8 +69,8 @@ class PickleTree {
                 this.div_ddetail.style.top = (e.clientY) + 'px';
                 this.div_ddetail.style.left = (e.clientX + 40) + 'px';
                 //set title to inside
-                this.div_ddetail.innerHTML = e.target.getAttribute('drag-title');
-                
+                this.div_ddetail.innerHTML = '<span>' + e.target.getAttribute('drag-title') + '</span>';
+
             });
             //drag end
             document.getElementById('div_pickletree').addEventListener("dragend", e => {
@@ -81,17 +81,17 @@ class PickleTree {
                 let node = this.nodeList[parseInt(e.target.id.split('node_')[1])];
                 //set old parent for cleaning
                 node.old_parent = node.parent;
-                if(this.drag_target ===parseInt(e.target.id.split('node_')[1])){
+                if (this.drag_target === parseInt(e.target.id.split('node_')[1])) {
                     //this means it dragged to outside
-                    node.parent = {id:0};
-                }else{
+                    node.parent = { id: 0 };
+                } else {
                     node.parent = this.getNode(this.drag_target);
-                     
+
                 }
                 //set new parent for dragging
                 node.updateNode();
                 //drop callback
-                if(this.dropCallback !== undefined){
+                if (this.dropCallback !== undefined) {
                     this.dropCallback(node);
                 }
             });
@@ -140,7 +140,7 @@ class PickleTree {
             //unfold icon
             unFoldedIcon: 'fa fa-minus',
             //menu icon
-            menuIcon: ['fa','fa-list-ul'],
+            menuIcon: ['fa', 'fa-list-ul'],
             //start status is collapsed or not
             foldedStatus: false,
             //drag 
@@ -178,7 +178,7 @@ class PickleTree {
      */
     setChildNodes(node) {
         //update node parent
-        for(let key in this.nodeList){
+        for (let key in this.nodeList) {
             if (this.nodeList[key].id === node.parent.id) {
                 this.nodeList[key].childs.push(node.id);
                 //show icon for childs
@@ -211,7 +211,7 @@ class PickleTree {
      */
     getChilds(node) {
         let list = [];
-        for(let key in this.nodeList){
+        for (let key in this.nodeList) {
             if (node.childs.includes(this.nodeList[key].id)) {
                 list.push(this.nodeList[key]);
             }
@@ -243,7 +243,7 @@ class PickleTree {
             }
             node.foldedStatus = !node.foldedStatus;
             //change node status
-            for(let key in this.nodeList){
+            for (let key in this.nodeList) {
                 if (this.nodeList[key].id === node.id) {
                     this.nodeList[key].foldedStatus = node.foldedStatus;
                 }
@@ -278,7 +278,7 @@ class PickleTree {
      */
     checkNode(node) {
         //change node checked data
-        for(let key in this.nodeList){
+        for (let key in this.nodeList) {
             this.nodeList[key].checkStatus = node.checkStatus;
         }
         //then if is checked and folded unfold and open childs
@@ -419,13 +419,13 @@ class PickleTree {
         //console.log(this.getNode(node.id.split('_')[1]))
         this.getNode(node.id.split('_')[1]).deleteNode();
         //clear old parent's childs if old parent info is exist
-        if(node.old_parent !== undefined && node.old_parent.id!==0){
-            this.nodeList[node.old_parent.value].childs = this.nodeList[node.old_parent.value].childs.filter(x=>{
-                return x!==node.id;
+        if (node.old_parent !== undefined && node.old_parent.id !== 0) {
+            this.nodeList[node.old_parent.value].childs = this.nodeList[node.old_parent.value].childs.filter(x => {
+                return x !== node.id;
             });
             //if child count is 0 then remove minus icon
-            if(this.nodeList[node.old_parent.value].childs.length===0){
-                document.getElementById('i_'+node.old_parent.id).style.display='none';
+            if (this.nodeList[node.old_parent.value].childs.length === 0) {
+                document.getElementById('i_' + node.old_parent.id).style.display = 'none';
             }
         }
         //draw new node with childs
@@ -440,8 +440,8 @@ class PickleTree {
             }
         }
         set(node);
-        
-        
+
+
         //log
         this.log('Node is created (' + node.id + ')');
         //return node
@@ -559,7 +559,7 @@ class PickleTree {
             let a_item = document.createElement('a');
             let i_item = document.createElement('i');
             //set icon for menu
-           
+
             for (let i = 0; i < this.config.menuIcon.length; i++) {
                 i_item.classList.add(this.config.menuIcon[i]);
             }
@@ -671,7 +671,7 @@ class PickleTree {
             this.div_ddetail.id = 'div_ddetail';
             this.div_ddetail.style.position = 'absolute';
             this.div_ddetail.style.display = 'none';
-            this.div_ddetail.innerHTML = 'No Element';
+            this.div_ddetail.innerHTML = '<span>No Element</span>';
             document.querySelector('body').appendChild(this.div_ddetail);
         }
 
