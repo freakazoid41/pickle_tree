@@ -56,7 +56,9 @@ class PickleTree {
             //drag start
             document.getElementById('div_pickletree').addEventListener("dragstart", e=>{
                 //drag callback
-                this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
+                if(this.dragCallback !== undefined){
+                    this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
+                }
             });
 
             //draging
@@ -90,7 +92,9 @@ class PickleTree {
                 //set new parent for dragging
                 node.updateNode();
                 //drop callback
-                this.dropCallback(node);
+                if(this.dropCallback !== undefined){
+                    this.dropCallback(node);
+                }
             });
             //drag location
             document.getElementById('div_pickletree').addEventListener("dragenter", (e) => {
@@ -556,7 +560,9 @@ class PickleTree {
             let a_item = document.createElement('a');
             let i_item = document.createElement('i');
             //set icon for menu
-            this.config.menuIcon = this.config.menuIcon.split(' ');
+            if(typeof this.config.menuIcon !== "object"){
+                this.config.menuIcon = this.config.menuIcon.split(' ');
+            }
             for (let i = 0; i < this.config.menuIcon.length; i++) {
                 i_item.classList.add(this.config.menuIcon[i]);
             }
