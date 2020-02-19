@@ -2,7 +2,7 @@
 
 # Pickle Tree
 
-> Pickle tree is a tree component written as completely pure javascript. Just send json file on object create and have fun :-D 
+> Pickle tree is a tree component written as completely pure javascript. Just send json file to object and have fun :-D 
 
 > Pickle tree does't need anything except you !
 
@@ -117,6 +117,9 @@ const tree = new PickleTree({
     //for check / uncheck node
     our_node.toggleCheck(true / false);
 
+    //update node
+    our_node.title = 'A new title for my node ';
+    old_node.updateNode();
 
     // for creating new  node manualy
     let new_node = tree.createNode({
