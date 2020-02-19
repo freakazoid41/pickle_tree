@@ -108,8 +108,6 @@ class PickleTree {
         }
     }
 
-
-
     /**
      * 
      * @param {string} message for log messages
@@ -440,8 +438,7 @@ class PickleTree {
             }
         }
         set(node);
-
-
+        
         //log
         this.log('Node is created (' + node.id + ')');
         //return node
@@ -492,8 +489,6 @@ class PickleTree {
                 //icon added to div
             div_item.appendChild(a_ditem);
             div_item.classList.add('drop_target')
-                /*div_item.setAttribute('dragable', true);
-                div_item.setAttribute('drag-title', node.title);*/
         }
 
         //set i item id
