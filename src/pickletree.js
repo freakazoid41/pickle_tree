@@ -47,7 +47,10 @@ class PickleTree {
             });
             if (elm.classList.contains('menuIcon')) {
                 //menu toggle event for node
-                this.getMenu(e.target, this.getNode(elm.id.split('_')[3]));
+                setTimeout(() => {
+                    this.getMenu(e.target, this.getNode(elm.id.split('_')[3]));
+                }, 10);
+                
             }
         });
         //drag - drop events
