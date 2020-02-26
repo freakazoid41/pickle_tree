@@ -141,5 +141,5 @@ const tree = new PickleTree({
 
 ### Clone
 
-- Clone this repo to your local machine using `https://github.com/freakazoid41/pickletree`
+- Clone this repo to your local machine using `https://github.com/freakazoid41/pickle_tree.git`
 
