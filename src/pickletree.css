@@ -146,6 +146,9 @@ ul li a {
 .menuCont span:hover {
     background: #dcdcdc;
 }
+.menuIcon i {
+    pointer-events: none;
+}
 
 
 /** drag styles **/
