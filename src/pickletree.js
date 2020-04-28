@@ -88,8 +88,12 @@ class PickleTree {
                     //this means it dragged to outside
                     node.parent = { id: 0 };
                 } else {
-                    node.parent = this.getNode(this.drag_target);
-
+                    let drop = this.getNode(this.drag_target);
+                    if (drop === undefined) {
+                        node.parent = { id: 0 };
+                    } else {
+                        node.parent = drop;
+                    }
                 }
                 //set new parent for dragging
                 node.updateNode();
