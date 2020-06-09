@@ -50,13 +50,32 @@ class PickleTree {
                 setTimeout(() => {
                     this.getMenu(e.target, this.getNode(elm.id.split('_')[3]));
                 }, 10);
-                
+
             }
         });
         //drag - drop events
         if (this.config.drag) {
+            this.invalid_area = {
+                container:null,
+                top:0,
+                left:0,
+                right:0,
+                bottom:0
+            };
+
+
             //drag start
             document.getElementById('div_pickletree').addEventListener("dragstart", e => {
+                //give border to container
+                let container = document.getElementById('node_'+e.target.id.split('node_')[1]);
+                container.classList.add('valid');
+                this.invalid_area.container = container;
+                this.invalid_area.top = container.getBoundingClientRect().top;
+                this.invalid_area.left = container.getBoundingClientRect().left;
+                this.invalid_area.right = this.invalid_area.left+container.offsetWidth;
+                this.invalid_area.bottom = this.invalid_area.top+container.offsetHeight;
+
+
                 //drag callback
                 if (this.dragCallback !== undefined) {
                     this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
@@ -65,35 +84,33 @@ class PickleTree {
 
             //draging
             document.getElementById('div_pickletree').addEventListener("drag", e => {
-                //get node info for drag
-                //show hidden tooltip
-                this.div_ddetail.style.display = '';
-                //set cordinates as mouse side
-                this.div_ddetail.style.top = (e.clientY) + 'px';
-                this.div_ddetail.style.left = (e.clientX + 40) + 'px';
-                //set title to inside
-                this.div_ddetail.innerHTML = '<span>' + e.target.getAttribute('drag-title') + '</span>';
-
+               
             });
             //drag end
             document.getElementById('div_pickletree').addEventListener("dragend", e => {
-                //make tootlip invisable again
-                this.div_ddetail.style.display = 'none';
+                //remove border to container
+                this.invalid_area.container.classList.remove('invalid');
+                this.invalid_area.container.classList.remove('valid');
+                
+               
                 //clear old targets
                 this.clearDebris();
+                //get node
                 let node = this.nodeList[parseInt(e.target.id.split('node_')[1])];
-                //set old parent for cleaning
-                node.old_parent = node.parent;
-                if (this.drag_target === parseInt(e.target.id.split('node_')[1])) {
-                    //this means it dragged to outside
+                //check is valid
+                if(!this.invalid_area.valid){
                     node.parent = { id: 0 };
-                } else {
+                }else{
+                    //set old parent for cleaning
+                    node.old_parent = node.parent;
                     let drop = this.getNode(this.drag_target);
-                    if (drop === undefined) {
+                    if (this.drag_target === parseInt(e.target.id.split('node_')[1]) || this.drag_target === undefined || drop === undefined) {
+                        //this means it dragged to outside
                         node.parent = { id: 0 };
-                    } else {
+                    }else{
                         node.parent = drop;
                     }
+                   
                 }
                 //set new parent for dragging
                 node.updateNode();
@@ -105,11 +122,34 @@ class PickleTree {
             //drag location
             document.getElementById('div_pickletree').addEventListener("dragenter", (e) => {
                 this.clearDebris();
-                if (e.target.classList.contains("drop_target")) {
-                    e.target.classList.add('drag_triggered');
-                    //this is for updating node parent to current
-                    this.drag_target = parseInt(e.target.id.split('node_')[1]);
+                try{
+                    //check position is valid
+                    let target = {
+                        left:e.target.getBoundingClientRect().left,
+                        top:e.target.getBoundingClientRect().top
+                    }
+                    if((target.top > this.invalid_area.top &&  target.top < this.invalid_area.bottom) && (target.left > this.invalid_area.left &&  target.left < this.invalid_area.right)){
+                        this.invalid_area.valid = false;
+                        this.invalid_area.container.classList.add('invalid');
+                        this.invalid_area.container.classList.remove('valid');
+                    }else{
+                        this.invalid_area.valid = true;
+                        this.invalid_area.container.classList.remove('invalid');
+                        this.invalid_area.container.classList.add('valid');
+                    }
+
+
+                    if(e.target.classList !== undefined){
+                        if (e.target.classList.contains("drop_target")) {
+                            e.target.classList.add('drag_triggered');
+                            //this is for updating node parent to current
+                            this.drag_target = parseInt(e.target.id.split('node_')[1]);
+                        }
+                    }
+                }catch(e){
+                    //console.log('dragging have exception..');
                 }
+                
             });
 
         }
@@ -445,7 +485,7 @@ class PickleTree {
             }
         }
         set(node);
-        
+
         //log
         this.log('Node is created (' + node.id + ')');
         //return node
@@ -627,6 +667,8 @@ class PickleTree {
      * this method will draw multiple data 
      */
     drawData() {
+        //start loading
+
         //if data is exist
         if (this.data.length > 0) {
             //first reshape data
@@ -667,20 +709,9 @@ class PickleTree {
 
         }
 
-        //at this point if drag is active we need to create element for dragable element info
-        if (this.config.drag) {
-            this.div_ddetail = document.createElement('div');
-            this.div_ddetail.id = 'div_ddetail';
-            this.div_ddetail.style.position = 'absolute';
-            this.div_ddetail.style.display = 'none';
-            this.div_ddetail.innerHTML = '<span>No Element</span>';
-            document.querySelector('body').appendChild(this.div_ddetail);
-        }
-
-
         //start drawcallback
         this.drawCallback();
-
+        //end loading
     }
 
     //#endregion
