@@ -122,7 +122,7 @@ const tree = new PickleTree({
 
     //update node
     our_node.title = 'A new title for my node ';
-    old_node.updateNode();
+    our_node.updateNode();
 
     // for creating new  node manualy
     let new_node = tree.createNode({
