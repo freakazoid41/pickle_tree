@@ -31,10 +31,7 @@ class PickleTree {
         this.staticEvents();
     }
 
-
-    //#region Helper Methods
-
-    /**
+     /**
      * this method will contains static events for tree
      */
     staticEvents() {
@@ -62,10 +59,10 @@ class PickleTree {
                 right:0,
                 bottom:0
             };
-
-
+            //referance for some events
+            let main_container = document.getElementById(this.config.key+'_div_pickletree');
             //drag start
-            document.getElementById('div_pickletree').addEventListener("dragstart", e => {
+            main_container.addEventListener("dragstart", e => {
                 //give border to container
                 let container = document.getElementById('node_'+e.target.id.split('node_')[1]);
                 container.classList.add('valid');
@@ -77,17 +74,17 @@ class PickleTree {
 
 
                 //drag callback
-                if (this.dragCallback !== undefined) {
+                if (this.dragCallback) {
                     this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
                 }
             });
 
             //draging
-            document.getElementById('div_pickletree').addEventListener("drag", e => {
+            main_container.addEventListener("drag", e => {
                
             });
             //drag end
-            document.getElementById('div_pickletree').addEventListener("dragend", e => {
+            main_container.addEventListener("dragend", e => {
                 //remove border to container
                 this.invalid_area.container.classList.remove('invalid');
                 this.invalid_area.container.classList.remove('valid');
@@ -115,12 +112,12 @@ class PickleTree {
                 //set new parent for dragging
                 node.updateNode();
                 //drop callback
-                if (this.dropCallback !== undefined) {
+                if (this.dropCallback) {
                     this.dropCallback(node);
                 }
             });
             //drag location
-            document.getElementById('div_pickletree').addEventListener("dragenter", (e) => {
+            main_container.addEventListener("dragenter", (e) => {
                 this.clearDebris();
                 try{
                     //check position is valid
@@ -139,7 +136,7 @@ class PickleTree {
                     }
 
 
-                    if(e.target.classList !== undefined){
+                    if(e.target.classList){
                         if (e.target.classList.contains("drop_target")) {
                             e.target.classList.add('drag_triggered');
                             //this is for updating node parent to current
@@ -154,6 +151,8 @@ class PickleTree {
 
         }
     }
+
+    //#region Helper Methods
 
     /**
      * 
@@ -171,6 +170,7 @@ class PickleTree {
     build(c_config) {
         //set default config
         this.config = {
+            key:new Date().getTime(),
             //logs are open or close
             logMode: false,
             //switch mode
@@ -196,13 +196,13 @@ class PickleTree {
         //check config here!!
         for (let key in this.config) {
 
-            if (c_config[key] !== undefined) {
+            if (c_config[key]) {
                 this.config[key] = c_config[key];
             }
         }
 
-        document.getElementById(this.target).innerHTML = '<div id="div_pickletree"><ul id="tree_picklemain"></ul></div>';
-        this.area = document.getElementById('tree_picklemain');
+        document.getElementById(this.target).innerHTML = '<div id="'+this.config.key+'_div_pickletree"><ul id="'+this.config.key+'_tree_picklemain"></ul></div>';
+        this.area = document.getElementById(this.config.key+'_tree_picklemain');
         this.log('tree build started..');
         this.drawData();
     }
@@ -232,9 +232,24 @@ class PickleTree {
         }
     }
 
+    /**
+     * this method will return switched nodes
+     */
+    getSelected(){
+        let nodes = [];
+        //get all checked nodes
+        for(let key in this.nodeList){
+            if(this.nodeList[key].checkStatus)nodes.push(this.nodeList[key]);
+        }
+        return nodes;
+    }
+
     //#endregion
 
-    //#region drag - drop events
+    //#region drag - drop events helpers
+    /**
+     * this method will clean entered areas after drag events
+     */
     clearDebris() {
         //first clean all entered areas
         let elms = document.querySelectorAll('.drag_triggered');
@@ -322,12 +337,10 @@ class PickleTree {
      * @param {object} node 
      */
     checkNode(node) {
-        //change node checked data
-        for (let key in this.nodeList) {
-            this.nodeList[key].checkStatus = node.checkStatus;
-        }
+        //console.log(node);
         //then if is checked and folded unfold and open childs
-        if (node.checkStatus && node.childs.length > 0) {
+        let clength = node.childs.length;
+        if (node.checkStatus && clength > 0) {
             //make element looks like is folded
             node.foldedStatus = true;
             this.toggleNode(node);
@@ -343,17 +356,34 @@ class PickleTree {
      * @param {object} node 
      */
     checkNodeFamily(node) {
+        let status = node.checkStatus;
         let parentCheck = async(node) => {
             //first check if has parent
             if (node.parent.id !== 0) {
-                //then get parent node
+                //get parent node
                 node = node.parent;
-                //change parent node status
-                node.checkStatus = true;
-                //check parent node
-                this.checkNode(node);
-                //then restart process
-                parentCheck(node);
+                let trans = ()=>{
+                    //change parent node status
+                    node.checkStatus = status;
+                    //check parent node
+                    this.checkNode(node);
+                    //then restart process
+                    parentCheck(node);
+                };
+                //decide for uncheck
+                if(!status){
+                    //if all childs is unchecked or child count is equal to 1
+                    let valid = true;
+                    let childs = node.getChilds();
+                    for (let i = 0; i < childs.length; i++) {
+                        if(childs[i].checkStatus){
+                            valid=false;
+                        } 
+                    }
+                    if(valid) trans();
+                }else{
+                    trans();
+                }
             }
         }
 
@@ -365,13 +395,15 @@ class PickleTree {
             if (node.childs.length > 0) {
                 //foreach child
                 for (let i = 0; i < node.childs.length; i++) {
+                    let c_node = this.getNode(node.childs[i].split('_')[1]);
+                    c_node.checkStatus = status;
                     //restart process
-                    childCheck(this.getNode(node.childs[i].split('_')[1]));
+                    childCheck(c_node);
                 }
             }
         }
         if (this.config.autoChild) childCheck(node);
-        if (node.checkStatus && this.config.autoParent) parentCheck(node);
+        if (this.config.autoParent) parentCheck(node);
     }
 
     /**
@@ -390,7 +422,6 @@ class PickleTree {
         }
 
     }
-
     //#endregion
 
 
@@ -439,7 +470,7 @@ class PickleTree {
 
         //check setted values here!!
         for (let key in obj) {
-            if (obj[key] !== undefined) node[key.split('_')[1]] = obj[key];
+            if (obj[key]) node[key.split('_')[1]] = obj[key];
             if (key === 'n_id') node['id'] = 'node_' + obj['n_id'];
         }
 
