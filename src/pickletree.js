@@ -192,15 +192,16 @@ class PickleTree {
             drag: false
 
         }
-
         //check config here!!
         for (let key in this.config) {
-
-            if (c_config[key]) {
+            if (c_config[key] !== undefined) {
                 this.config[key] = c_config[key];
             }
         }
-
+        //check if key is exist somewhere in document
+        if(document.getElementById(this.config.key+'_div_pickletree')!==null){
+            this.config.key = new Date().getTime()+10;
+        }
         document.getElementById(this.target).innerHTML = '<div id="'+this.config.key+'_div_pickletree"><ul id="'+this.config.key+'_tree_picklemain"></ul></div>';
         this.area = document.getElementById(this.config.key+'_tree_picklemain');
         this.log('tree build started..');
@@ -244,6 +245,19 @@ class PickleTree {
         return nodes;
     }
 
+    /**
+     * this method will reset switched nodes
+     */
+    resetSelected(){
+        //get all checked nodes
+        for(let key in this.nodeList){
+            if(this.nodeList[key].checkStatus){
+                this.nodeList[key].checkStatus = false;
+                this.checkNode(this.nodeList[key]);
+            }
+        }
+        return true;
+    }
     //#endregion
 
     //#region drag - drop events helpers
@@ -653,6 +667,7 @@ class PickleTree {
         //#endregion
 
         //if is main node
+        //check if element is exist for preventing copy elements
         if (node.parent.id === 0) {
             //put item to area
             this.area.appendChild(li_item);
