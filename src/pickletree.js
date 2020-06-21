@@ -43,9 +43,11 @@ class PickleTree {
                 menu.outerHTML = '';
             });
             if (elm.classList.contains('menuIcon')) {
+                console.log('falan')
+                console.log()
                 //menu toggle event for node
                 setTimeout(() => {
-                    this.getMenu(e.target, this.getNode(elm.id.split('_')[3]));
+                    this.getMenu(e.target, this.getNode(elm.id.split('node_')[1]));
                 }, 10);
 
             }
@@ -64,7 +66,7 @@ class PickleTree {
             //drag start
             main_container.addEventListener("dragstart", e => {
                 //give border to container
-                let container = document.getElementById('node_'+e.target.id.split('node_')[1]);
+                let container = document.getElementById(this.target+'node_'+e.target.id.split('node_')[1]);
                 container.classList.add('valid');
                 this.invalid_area.container = container;
                 this.invalid_area.top = container.getBoundingClientRect().top;
@@ -409,7 +411,7 @@ class PickleTree {
             if (node.childs.length > 0) {
                 //foreach child
                 for (let i = 0; i < node.childs.length; i++) {
-                    let c_node = this.getNode(node.childs[i].split('_')[1]);
+                    let c_node = this.getNode(node.childs[i].split('node_')[1]);
                     c_node.checkStatus = status;
                     //restart process
                     childCheck(c_node);
@@ -451,7 +453,7 @@ class PickleTree {
             //node value
             value: id,
             //node id
-            id: 'node_' + id,
+            id: this.target+'node_' + id,
             //node title
             title: 'untitled ' + id,
             //node html elements
@@ -484,11 +486,9 @@ class PickleTree {
 
         //check setted values here!!
         for (let key in obj) {
-            if (obj[key]) node[key.split('_')[1]] = obj[key];
-            if (key === 'n_id') node['id'] = 'node_' + obj['n_id'];
+            if (obj[key]!==undefined) node[key.split('_')[1]] = obj[key];
+            if (key === 'n_id') node['id'] = this.target+'node_' + obj['n_id'];
         }
-
-
 
         //node is added to container
         this.nodeList[obj['n_id']] = node;
@@ -507,7 +507,7 @@ class PickleTree {
     updateNode(node) {
         //first remove old node
         //console.log(this.getNode(node.id.split('_')[1]))
-        this.getNode(node.id.split('_')[1]).deleteNode();
+        this.getNode(node.id.split('node_')[1]).deleteNode();
         //clear old parent's childs if old parent info is exist
         if (node.old_parent !== undefined && node.old_parent.id !== 0) {
             this.nodeList[node.old_parent.value].childs = this.nodeList[node.old_parent.value].childs.filter(x => {
@@ -691,13 +691,13 @@ class PickleTree {
         //toggle event for node
         document.getElementById('a_toggle_' + node.id).addEventListener('click', e => {
             //toggle item childs
-            this.toggleNode(this.getNode(e.currentTarget.id.split('_')[3]));
+            this.toggleNode(this.getNode(e.currentTarget.id.split('node_')[1]));
         });
 
         //switch event for node
         if (this.config.switchMode) {
             document.getElementById('ck_' + node.id).addEventListener('click', e => {
-                let node = this.getNode(e.currentTarget.id.split('_')[2]);
+                let node = this.getNode(e.currentTarget.id.split('node_')[1]);
                 node.checkStatus = e.currentTarget.checked;
                 if (this.config.autoChild || this.config.autoParent) {
                     this.checkNodeFamily(node);
@@ -749,7 +749,7 @@ class PickleTree {
                     }
                 }
             }
-
+            console.log(order(this.data))
             //start chain
             set(order(this.data));
 
@@ -777,6 +777,7 @@ class PickleTree {
     }
 
     drawMenu(obj) {
+        console.log(obj);
         //check if menu already exist
         if (document.getElementById('div_menu_' + obj.node.id) === null) {
             //create menu div
@@ -799,7 +800,7 @@ class PickleTree {
 
                 //then add click event
                 span_item.addEventListener('click', e => {
-                    obj.node.elements[i].onClick(this.getNode(e.target.getAttribute('data-node').split('_')[1]));
+                    obj.node.elements[i].onClick(this.getNode(e.target.getAttribute('data-node').split('node_')[1]));
                 });
             }
             //calculate location
