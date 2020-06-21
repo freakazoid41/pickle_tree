@@ -105,7 +105,7 @@
 
 /* menu container */
 
-.tree .menuCont {
+.treemenuCont {
     display: flex;
     flex-direction: column;
     background-color: #ffff;
@@ -118,7 +118,7 @@
     font-family: monospace, 'Open Sans';
 }
 
-.tree .menuCont span {
+.treemenuCont span {
     padding: 10px 10px 10px 10px;
     border-bottom: 1px solid #9e9e9e;
     display: flex;
@@ -126,24 +126,24 @@
     cursor: pointer;
 }
 
-.tree .menuCont span i {
+.treemenuCont span i {
     color: #ef606b;
     padding-right: 3px;
 }
 
-.tree .menuCont span:last-child {
+.treemenuCont span:last-child {
     border-bottom: 0px solid;
 }
 
-.tree .menuCont span:last-child:hover {
+.treemenuCont span:last-child:hover {
     border-radius: 0px 0px 16px 16px;
 }
 
-.tree .menuCont span:first-child:hover {
+.treemenuCont span:first-child:hover {
     border-radius: 16px 16px 0px 0px;
 }
 
-.tree .menuCont span:hover {
+.treemenuCont span:hover {
     background: #dcdcdc;
 }
 
