@@ -39,7 +39,7 @@ class PickleTree {
         document.body.addEventListener('click', e => {
             let elm = e.target;
             //close all first 
-            document.querySelectorAll('.menuCont').forEach(menu => {
+            document.querySelectorAll('.treemenuCont').forEach(menu => {
                 menu.outerHTML = '';
             });
             if (elm.classList.contains('menuIcon')) {
@@ -785,7 +785,7 @@ class PickleTree {
             //add to body
             document.body.appendChild(menu_item);
             menu_item.id = 'div_menu_' + obj.node.id;
-            menu_item.classList.add('menuCont');
+            menu_item.classList.add('treemenuCont');
 
             //for each menu item
             let span_item;
