@@ -43,8 +43,6 @@ class PickleTree {
                 menu.outerHTML = '';
             });
             if (elm.classList.contains('menuIcon')) {
-                console.log('falan')
-                console.log()
                 //menu toggle event for node
                 setTimeout(() => {
                     this.getMenu(e.target, this.getNode(elm.id.split('node_')[1]));
@@ -336,16 +334,18 @@ class PickleTree {
      */
     deleteNode(node) {
         //remove node from old parent's child data !!!!
-
+        console.log(node.id)
         let elm = document.getElementById(node.id);
-        let childs = node.getChilds();
-        if (childs.length > 0) {
-            for (let i = 0; i < childs.length; i++) {
-                this.deleteNode(childs[i]);
+        if(elm !== null){
+            let childs = node.getChilds();
+            if (childs.length > 0) {
+                for (let i = 0; i < childs.length; i++) {
+                    this.deleteNode(childs[i]);
+                }
             }
+            elm.parentNode.removeChild(elm);
+            this.log('node removed..(' + node.id + ')');
         }
-        elm.parentNode.removeChild(elm);
-        this.log('node removed..(' + node.id + ')');
     }
 
     /**
@@ -777,9 +777,8 @@ class PickleTree {
     }
 
     drawMenu(obj) {
-        console.log(obj);
         //check if menu already exist
-        if (document.getElementById('div_menu_' + obj.node.id) === null) {
+        if (obj.node !== undefined && document.getElementById('div_menu_' + obj.node.id) === null) {
             //create menu div
             let menu_item = document.createElement('div');
             //add to body
