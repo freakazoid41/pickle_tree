@@ -92,7 +92,6 @@ class PickleTree {
             });
             //drag end
             main_container.addEventListener("dragend", async e => {
-                
                 //remove border to container
                 this.invalid_area.container.classList.remove('invalid');
                 this.invalid_area.container.classList.remove('valid');
@@ -109,22 +108,24 @@ class PickleTree {
                 }else{
                     //set old parent for cleaning
                     node.old_parent = node.parent;
-                    let drop = this.getNode(this.drag_target);
-                    console.log(drop)
-                    if (this.drag_target === parseInt(e.target.value) || this.drag_target === undefined || drop === undefined) {
+                    const drop = this.getNode(this.drag_target);
+                    if (this.drag_target === parseInt(e.target.id.split('node_')[1]) || this.drag_target === undefined || drop === undefined || drop.parent.value === node.value) {
                         //this means it dragged to outside
                         node.parent = { id: 0 };
                     }else{
                         node.parent = drop;
                     }
                 }
+
+                node.updateNode();
+
                 //set new parent after
-                try{
+                /*try{
                     node.updateNode();
                 }catch(e){
                     node.parent = { id: 0 };
                     node.updateNode();
-                }
+                }*/
                 
                 //drop callback
                 if (this.dropCallback) {
@@ -160,6 +161,7 @@ class PickleTree {
                     }
                 }catch(e){
                     //console.log('dragging have exception..');
+                    this.drag_target = undefined;
                 }
                 
             });
