@@ -52,6 +52,25 @@ class PickleTree {
 
             }
         });
+
+
+        const fallowDrag = (type = true) =>{
+            document.captureEvents(Event.MOUSEMOVE);
+            if(type){
+                document.onmousemove = (e)=>{
+                    const location = {
+                        'x':(window.Event) ? e.pageX : event.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft),
+                        'y':(window.Event) ? e.pageY : event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop)
+                    }
+                    console.log(location);
+                }
+            }else{
+                document.onmousemove = null;
+            }
+            
+        }
+
+
         //drag - drop events
         if (this.config.drag) {
             this.invalid_area = {
@@ -64,7 +83,8 @@ class PickleTree {
             //referance for some events
             let main_container = document.getElementById(this.config.key+'_div_pickletree');
             //drag start
-            main_container.addEventListener("dragstart", e => {
+            main_container.addEventListener("dragstart", async e => {
+                //fallowDrag();
                 //give border to container
                 let container = document.getElementById(this.target+'node_'+e.target.id.split('node_')[1]);
                 container.classList.add('valid');
@@ -74,7 +94,9 @@ class PickleTree {
                 this.invalid_area.right = this.invalid_area.left+container.offsetWidth;
                 this.invalid_area.bottom = this.invalid_area.top+container.offsetHeight;
 
-
+                //make all elements pointer null
+                this._lock();
+                
                 //drag callback
                 if (this.dragCallback) {
                     this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
@@ -86,11 +108,13 @@ class PickleTree {
                
             });
             //drag end
-            main_container.addEventListener("dragend", e => {
+            main_container.addEventListener("dragend", async e => {
+                //fallowDrag(false);
                 //remove border to container
                 this.invalid_area.container.classList.remove('invalid');
                 this.invalid_area.container.classList.remove('valid');
-                
+                //make all elements pointer clean
+                this._lock(false);
                
                 //clear old targets
                 this.clearDebris();
@@ -103,16 +127,22 @@ class PickleTree {
                     //set old parent for cleaning
                     node.old_parent = node.parent;
                     let drop = this.getNode(this.drag_target);
+                    console.log(drop)
                     if (this.drag_target === parseInt(e.target.value) || this.drag_target === undefined || drop === undefined) {
                         //this means it dragged to outside
                         node.parent = { id: 0 };
                     }else{
                         node.parent = drop;
                     }
-                   
                 }
-                //set new parent for dragging
-                node.updateNode();
+                //set new parent after
+                try{
+                    node.updateNode();
+                }catch(e){
+                    node.parent = { id: 0 };
+                    node.updateNode();
+                }
+                
                 //drop callback
                 if (this.dropCallback) {
                     this.dropCallback(node);
@@ -155,6 +185,20 @@ class PickleTree {
     }
 
     //#region Helper Methods
+    /**
+     * this method will lock elements when dragging 
+     */
+    async _lock(type=true){
+        const elms = document.querySelectorAll('.drop_target');
+        for(let i = 0;i<elms.length;i++){
+            if(type){
+                elms[i].classList.add('disabled');
+            }else{
+                elms[i].classList.remove('disabled');
+            }
+        }
+    }
+
 
     /**
      * 
@@ -344,7 +388,7 @@ class PickleTree {
                 this.deleteNode(childs[i]);
             }
         }
-        elm.parentNode.removeChild(elm);
+        if(elm !== null)elm.parentNode.removeChild(elm);
         this.log('node removed..(' + node.id + ')');
     }
 
