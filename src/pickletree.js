@@ -26,25 +26,24 @@ class PickleTree {
         this.data = obj.c_data;
         //build tree
         this.build(obj.c_config);
-
+        //referance for some events
+        this.main_container = document.getElementById(this.config.key+'_div_pickletree');
         //start events 
         this.staticEvents();
     }
 
-     /**
+    /**
      * this method will contains static events for tree
      */
     staticEvents() {
         //close menu 
-        document.body.addEventListener('click', e => {
+        this.main_container.addEventListener('click', e => {
             let elm = e.target;
             //close all first 
             document.querySelectorAll('.treemenuCont').forEach(menu => {
                 menu.outerHTML = '';
             });
             if (elm.classList.contains('menuIcon')) {
-                console.log('falan')
-                console.log()
                 //menu toggle event for node
                 setTimeout(() => {
                     this.getMenu(e.target, this.getNode(elm.id.split('node_')[1]));
@@ -63,10 +62,9 @@ class PickleTree {
                 right:0,
                 bottom:0
             };
-            //referance for some events
-            let main_container = document.getElementById(this.config.key+'_div_pickletree');
+           
             //drag start
-            main_container.addEventListener("dragstart", async e => {
+            this.main_container.addEventListener("dragstart", async e => {
                 
                 //give border to container
                 let container = document.getElementById(this.target+'node_'+e.target.id.split('node_')[1]);
@@ -87,11 +85,11 @@ class PickleTree {
             });
 
             //draging
-            main_container.addEventListener("drag", e => {
+            this.main_container.addEventListener("drag", e => {
                
             });
             //drag end
-            main_container.addEventListener("dragend", async e => {
+            this.main_container.addEventListener("dragend", async e => {
                 //remove border to container
                 this.invalid_area.container.classList.remove('invalid');
                 this.invalid_area.container.classList.remove('valid');
@@ -118,14 +116,6 @@ class PickleTree {
                 }
 
                 node.updateNode();
-
-                //set new parent after
-                /*try{
-                    node.updateNode();
-                }catch(e){
-                    node.parent = { id: 0 };
-                    node.updateNode();
-                }*/
                 
                 //drop callback
                 if (this.dropCallback) {
@@ -133,7 +123,7 @@ class PickleTree {
                 }
             });
             //drag location
-            main_container.addEventListener("dragenter", (e) => {
+            this.main_container.addEventListener("dragenter", (e) => {
                 this.clearDebris();
                 try{
                     //check position is valid
@@ -170,6 +160,19 @@ class PickleTree {
     }
 
     //#region Helper Methods
+    /**
+     * 
+     */
+    async destroy(){
+        //remove all menus
+        document.querySelectorAll('.treemenuCont').forEach(menu => {
+            menu.outerHTML = '';
+        });
+        //remove all items
+        document.getElementById(this.target).innerHTML = '';
+    }
+
+
     /**
      * this method will lock elements when dragging 
      */
@@ -806,7 +809,6 @@ class PickleTree {
     }
 
     drawMenu(obj) {
-        console.log(obj);
         //check if menu already exist
         if (document.getElementById('div_menu_' + obj.node.id) === null) {
             //create menu div
@@ -830,6 +832,8 @@ class PickleTree {
                 //then add click event
                 span_item.addEventListener('click', e => {
                     obj.node.elements[i].onClick(this.getNode(e.target.getAttribute('data-node').split('node_')[1]));
+                    //remove menu after click
+                    menu_item.outerHTML = '';
                 });
             }
             //calculate location
@@ -844,4 +848,5 @@ class PickleTree {
     }
 
     //#endregion
+
 }
