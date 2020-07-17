@@ -53,26 +53,9 @@ class PickleTree {
             }
         });
 
-
-        const fallowDrag = (type = true) =>{
-            document.captureEvents(Event.MOUSEMOVE);
-            if(type){
-                document.onmousemove = (e)=>{
-                    const location = {
-                        'x':(window.Event) ? e.pageX : event.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft),
-                        'y':(window.Event) ? e.pageY : event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop)
-                    }
-                    console.log(location);
-                }
-            }else{
-                document.onmousemove = null;
-            }
-            
-        }
-
-
         //drag - drop events
         if (this.config.drag) {
+           
             this.invalid_area = {
                 container:null,
                 top:0,
@@ -84,7 +67,7 @@ class PickleTree {
             let main_container = document.getElementById(this.config.key+'_div_pickletree');
             //drag start
             main_container.addEventListener("dragstart", async e => {
-                //fallowDrag();
+                
                 //give border to container
                 let container = document.getElementById(this.target+'node_'+e.target.id.split('node_')[1]);
                 container.classList.add('valid');
@@ -109,7 +92,7 @@ class PickleTree {
             });
             //drag end
             main_container.addEventListener("dragend", async e => {
-                //fallowDrag(false);
+                
                 //remove border to container
                 this.invalid_area.container.classList.remove('invalid');
                 this.invalid_area.container.classList.remove('valid');
