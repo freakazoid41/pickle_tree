@@ -380,7 +380,8 @@ class PickleTree {
         }
         if(elm !== null)elm.parentNode.removeChild(elm);
         this.log('node removed..(' + node.id + ')');
-        this.nodeRemove(node);
+        if(this.nodeRemove !== null && this.nodeRemove !== undefined)this.nodeRemove(node);
+        
     }
 
     /**
