@@ -22,6 +22,8 @@ class PickleTree {
         this.dragCallback = obj.dragCallback;
         //drop callback 
         this.dropCallback = obj.dropCallback;
+        //node removed callback
+        this.nodeRemove = obj.nodeRemoveCallback;
         //tree json data
         this.data = obj.c_data;
         //build tree
@@ -378,6 +380,7 @@ class PickleTree {
         }
         if(elm !== null)elm.parentNode.removeChild(elm);
         this.log('node removed..(' + node.id + ')');
+        this.nodeRemove(node);
     }
 
     /**
