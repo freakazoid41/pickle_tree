@@ -39,6 +39,10 @@ const tree = new PickleTree({
             //retuns node with new parent and old parent in 'old_parent' key!!
             console.log(node);
         },
+        nodeRemoveCallback:(node)=>{
+            //returns removed node
+            console.log(node);
+        },
         c_config: {
             //start as folded or unfolded
             foldedStatus: false,
@@ -133,6 +137,9 @@ const tree = new PickleTree({
         n_parent: tree.getNode(4),
         n_checkStatus: false
     });
+    
+    //destroy tree
+    tree.destroy();
 
 ```
 
