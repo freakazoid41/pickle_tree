@@ -192,3 +192,9 @@
 .tree .invalid {
     border: 3px solid #ef606b;
 }
+.disabled >*{
+    pointer-events: none;
+}
+.treemenuCont i{
+    pointer-events: none;
+}
