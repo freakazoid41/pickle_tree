@@ -380,8 +380,7 @@ class PickleTree {
         }
         if(elm !== null)elm.parentNode.removeChild(elm);
         this.log('node removed..(' + node.id + ')');
-        if(this.nodeRemove !== null && this.nodeRemove !== undefined)this.nodeRemove(node);
-        
+        this.nodeRemove(node);
     }
 
     /**
@@ -498,6 +497,8 @@ class PickleTree {
             parent: { id: 0 },
             // child element ids
             childs: [],
+            //addional info
+            addional:{},
             //childs status (child list opened or not)
             foldedStatus: this.config.foldedStatus,
             //check status for node
@@ -519,13 +520,12 @@ class PickleTree {
             }
 
         }
-
+        
         //check setted values here!!
         for (let key in obj) {
             if (obj[key]!==undefined) node[key.split('_')[1]] = obj[key];
             if (key === 'n_id') node['id'] = this.target+'node_' + obj['n_id'];
         }
-
         //node is added to container
         this.nodeList[obj['n_id']] = node;
         //node is drawed
@@ -672,7 +672,6 @@ class PickleTree {
             ck_item.value = node.value;
             //if item created as checked
             ck_item.checked = node.checkStatus;
-
             //switch is added to li element
             div_item.appendChild(sw_item);
         }
@@ -773,12 +772,13 @@ class PickleTree {
             let set = (list) => {
                 for (let i = 0; i < list.length; i++) {
                     this.createNode({
+                        n_addional:list[i].n_addional,
                         n_value: list[i].n_id,
                         n_title: list[i].n_title,
                         n_id: list[i].n_id,
                         n_elements: list[i].n_elements,
                         n_parent: this.getNode(list[i].n_parentid),
-                        n_checkStatus: typeof list[i].n_checked === 'undefined' ? false : list[i].n_checked
+                        n_checkStatus: typeof list[i].n_checkStatus === 'undefined' ? false : list[i].n_checkStatus
                     });
                     if (list[i].Child) {
                         set(list[i].Child);
