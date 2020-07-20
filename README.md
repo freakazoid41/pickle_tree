@@ -61,7 +61,7 @@ const tree = new PickleTree({
             n_id: 1,
             n_title: 'falan1',
             n_parentid: 0,
-            n_checked: true,
+            n_checkStatus: true,
             n_elements : [{
                 icon:'fa fa-edit',
                 title:'Edit',
