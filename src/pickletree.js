@@ -65,21 +65,20 @@ class PickleTree {
                 bottom:0
             };
            
+
             //drag start
             this.main_container.addEventListener("dragstart", async e => {
-                
                 //give border to container
-                let container = document.getElementById(this.target+'node_'+e.target.id.split('node_')[1]);
-                container.classList.add('valid');
-                this.invalid_area.container = container;
-                this.invalid_area.top = container.getBoundingClientRect().top;
-                this.invalid_area.left = container.getBoundingClientRect().left;
-                this.invalid_area.right = this.invalid_area.left+container.offsetWidth;
-                this.invalid_area.bottom = this.invalid_area.top+container.offsetHeight;
-
-                //make all elements pointer null
-                this._lock();
-                
+                //container
+                this.invalid_area.container = document.getElementById(this.target+'node_'+e.target.id.split('node_')[1]);
+                this.invalid_area.top = this.invalid_area.container.getBoundingClientRect().top;
+                this.invalid_area.left = this.invalid_area.container.getBoundingClientRect().left;
+                this.invalid_area.right = this.invalid_area.left+this.invalid_area.container.offsetWidth;
+                this.invalid_area.bottom = this.invalid_area.top+this.invalid_area.container.offsetHeight;
+                setTimeout(() => {
+                    this.invalid_area.container.classList.add('valid');
+                    this._lock();
+                }, 300);
                 //drag callback
                 if (this.dragCallback) {
                     this.dragCallback(this.nodeList[parseInt(e.target.id.split('node_')[1])]);
@@ -88,10 +87,11 @@ class PickleTree {
 
             //draging
             this.main_container.addEventListener("drag", e => {
-               
+               //console.log('drag happenign');
             });
             //drag end
             this.main_container.addEventListener("dragend", async e => {
+                //console.log('drag end')
                 //remove border to container
                 this.invalid_area.container.classList.remove('invalid');
                 this.invalid_area.container.classList.remove('valid');
@@ -126,6 +126,7 @@ class PickleTree {
             });
             //drag location
             this.main_container.addEventListener("dragenter", (e) => {
+                //console.log('drag enter')
                 this.clearDebris();
                 try{
                     //check position is valid
@@ -133,6 +134,7 @@ class PickleTree {
                         left:e.target.getBoundingClientRect().left,
                         top:e.target.getBoundingClientRect().top
                     }
+
                     if((target.top > this.invalid_area.top &&  target.top < this.invalid_area.bottom) && (target.left > this.invalid_area.left &&  target.left < this.invalid_area.right)){
                         this.invalid_area.valid = false;
                         this.invalid_area.container.classList.add('invalid');
@@ -785,14 +787,13 @@ class PickleTree {
                     }
                 }
             }
-            console.log(order(this.data))
             //start chain
             set(order(this.data));
 
         }
 
         //start drawcallback
-        this.drawCallback();
+        if(this.drawCallback !== undefined )this.drawCallback();
         //end loading
     }
 
