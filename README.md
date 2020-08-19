@@ -123,7 +123,7 @@ const tree = new PickleTree({
     our_node.toggleCheck(true / false);
     
     //for getting all checked (selected) nodes
-    our_node.getSelected();
+    tree.getSelected();
 
     //update node
     our_node.title = 'A new title for my node ';
