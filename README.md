@@ -124,6 +124,9 @@ const tree = new PickleTree({
     
     //for getting all checked (selected) nodes
     tree.getSelected();
+    
+    //for deselecting all checked (selected) nodes
+    tree.resetSelected();
 
     //update node
     our_node.title = 'A new title for my node ';
