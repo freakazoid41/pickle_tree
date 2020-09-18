@@ -5,6 +5,7 @@
     display: inline-block;
     width: 30px;
     height: 18px;
+    margin:0;
 }
 
 .tree .switch input {
