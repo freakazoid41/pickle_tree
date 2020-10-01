@@ -143,7 +143,9 @@
 .treemenuCont span:first-child:hover {
     border-radius: 16px 16px 0px 0px;
 }
-
+.treemenuCont span:only-child {
+    border-radius: 16px 16px 16px 16px !important;
+}
 .treemenuCont span:hover {
     background: #dcdcdc;
 }
