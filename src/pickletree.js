@@ -738,9 +738,8 @@ class PickleTree {
                 node.checkStatus = e.currentTarget.checked;
                 if (this.config.autoChild || this.config.autoParent) {
                     this.checkNodeFamily(node);
-                } else {
-                    this.checkNode(node);
                 }
+                this.checkNode(node);
             });
         }
     }
