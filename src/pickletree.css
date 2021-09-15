@@ -51,6 +51,8 @@
     -ms-transform: translateX(12px);
     transform: translateX(12px);
 }
+.tree a:hover > i,
+.tree i:hover { color: tomato !important; cursor: pointer;}
 
 
 /* Rounded sliders */
@@ -81,6 +83,7 @@
     border: 1px solid #ccc;
     padding: 2px;
     align-items: center;
+    height: 30px;
 }
 
 .tree ul li a {
@@ -92,6 +95,8 @@
     text-decoration: none;
 }
 .tree ul { padding-left: 15px;}
+.tree_order_div{ height: 20px !important;}
+.tree_order_div i{ margin: 5px !important;}
 
 /* Border styles end */
 
