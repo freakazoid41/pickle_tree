@@ -22,14 +22,14 @@ class PickleTree {
         this.dragCallback = obj.dragCallback;
         //drop callback 
         this.dropCallback = obj.dropCallback;
+        //order callback 
+        this.orderCallback = obj.orderCallback;
         //node removed callback
         this.nodeRemove = obj.nodeRemoveCallback;
         //tree json data
         this.data = obj.c_data;
         //build tree
         this.build(obj.c_config);
-        //referance for some events
-        this.main_container = document.getElementById(this.config.key+'_div_pickletree');
         //start events 
         this.staticEvents();
     }
@@ -109,7 +109,7 @@ class PickleTree {
                     //set old parent for cleaning
                     node.old_parent = node.parent;
                     const drop = this.getNode(this.drag_target);
-                    if (this.drag_target === parseInt(e.target.id.split('node_')[1]) || this.drag_target === undefined || drop === undefined || drop.parent.value === node.value) {
+                    if (this.drag_target === parseInt(e.target.id.split('node_')[1]) || this.drag_target === undefined || drop === undefined || drop.parent.value === node.value) {
                         //this means it dragged to outside
                         node.parent = { id: 0 };
                     }else{
@@ -208,26 +208,28 @@ class PickleTree {
     build(c_config) {
         //set default config
         this.config = {
-            key:new Date().getTime(),
+            key          : new Date().getTime(),
             //logs are open or close
-            logMode: false,
+            logMode      : false,
             //switch mode
-            switchMode: false,
+            switchMode   : false,
             //family mode
             //for child
-            autoChild: true,
+            autoChild    : true,
             //for parent
-            autoParent: true,
+            autoParent   : true,
             //fold icon
-            foldedIcon: 'fa fa-plus',
+            foldedIcon   : 'fa fa-plus',
             //unfold icon
-            unFoldedIcon: 'fa fa-minus',
+            unFoldedIcon : 'fa fa-minus',
             //menu icon
-            menuIcon: ['fa', 'fa-list-ul'],
+            menuIcon     : ['fa', 'fa-list-ul'],
             //start status is collapsed or not
-            foldedStatus: false,
+            foldedStatus : false,
             //drag 
-            drag: false
+            drag         : false,
+            //order
+            order        : false
 
         }
         //check config here!!
@@ -240,7 +242,11 @@ class PickleTree {
         if(document.getElementById(this.config.key+'_div_pickletree')!==null){
             this.config.key = new Date().getTime()+10;
         }
-        document.getElementById(this.target).innerHTML = '<div id="'+this.config.key+'_div_pickletree"><ul id="'+this.config.key+'_tree_picklemain"></ul></div>';
+        //referance for some events
+        this.main_container = document.getElementById(this.target);
+        this.main_container.innerHTML = '<div id="'+this.config.key+'_div_pickletree"><ul id="'+this.config.key+'_tree_picklemain"></ul></div>';
+        //console.log(this.main_container.getElementById(this.config.key+'_tree_picklemain'));
+        
         this.area = document.getElementById(this.config.key+'_tree_picklemain');
         this.log('tree build started..');
         this.drawData();
@@ -317,6 +323,32 @@ class PickleTree {
 
 
     //#region Node Events
+    /**
+     * this method will order element
+     * @param {event} e 
+     */
+    orderNode(e){
+        const isBefore = e.target.dataset.target == 1;
+        const main = e.target.parentNode.parentNode.parentNode;
+        const target = isBefore ? main.previousElementSibling : main.nextElementSibling;
+        //get nodes
+        if(target !== null){
+            //replace data
+            const targetNode = this.getNode(target.id.split('_treenode_')[1]);
+            const mainNode   = this.getNode(main.id.split('_treenode_')[1])
+            
+            const currentOrder = mainNode.order;
+            const targetOrder  = targetNode.order === mainNode.order ? (isBefore ? targetNode.order-1 : targetNode.order+1 )  : targetNode.order;
+            //change order data
+            targetNode.order = currentOrder;
+            mainNode.order   = targetOrder;
+           
+            //replace element
+            main.parentNode.replaceChild(main,target);
+            main.parentNode.insertBefore(target, isBefore ? main.nextSibling : main);
+        }
+        if (typeof this.orderCallback == "function") this.config.orderCallback(main,target);
+    }
     /**
      * get child nodes list of node
      * @param {object} node 
@@ -485,38 +517,40 @@ class PickleTree {
      * @param {object} obj
      */
     createNode(obj) {
-        let id = Date.now();
-        let node = {
+        const id = Date.now();
+        const node = {
             //node value
-            value: id,
+            value        : id,
             //node id
-            id: this.target+'node_' + id,
+            id           : this.target+'node_' + id,
             //node title
-            title: 'untitled ' + id,
+            title        : 'untitled ' + id,
             //node html elements
-            elements: [],
+            elements     : [],
+            //order number
+            order        : null,
             //node parent element
-            parent: { id: 0 },
+            parent       : { id: 0 },
             // child element ids
-            childs: [],
+            childs       : [],
             //addional info
-            addional:{},
+            addional     :{},
             //childs status (child list opened or not)
-            foldedStatus: this.config.foldedStatus,
+            foldedStatus : this.config.foldedStatus,
             //check status for node
-            checkStatus: false,
+            checkStatus  : false,
             //this method will return child nodes
-            getChilds: () => this.getChilds(node),
+            getChilds    : () => this.getChilds(node),
             //this method will remove node from dom
-            deleteNode: () => this.deleteNode(node),
+            deleteNode   : () => this.deleteNode(node),
             //this method will update node
-            updateNode: () => this.updateNode(node),
+            updateNode   : () => this.updateNode(node),
             //this method will toggle node
-            toggleNode: () => this.toggleNode(node),
+            toggleNode   : () => this.toggleNode(node),
             //this method will show node location
-            showFamily: () => this.showFamily(node),
+            showFamily   : () => this.showFamily(node),
             //check node
-            toggleCheck: (status) => {
+            toggleCheck  : (status) => {
                 node.checkStatus = status;
                 this.checkNode(node);
             }
@@ -525,9 +559,12 @@ class PickleTree {
         
         //check setted values here!!
         for (let key in obj) {
-            if (obj[key]!==undefined) node[key.split('_')[1]] = obj[key];
+            if (obj[key] !== undefined) node[key.split('_')[1]] = obj[key];
             if (key === 'n_id') node['id'] = this.target+'node_' + obj['n_id'];
         }
+
+        if(node.order === null) node.order = 0;
+
         //node is added to container
         this.nodeList[obj['n_id']] = node;
         //node is drawed
@@ -600,11 +637,35 @@ class PickleTree {
         //node group item 
         let div_item = document.createElement("div");
 
+        //make node ordarable
+        if(this.config.order){
+            const o_div = document.createElement('div');
+            o_div.id = 'order_'+node.id;
+            //create buttons
+            const up_i = document.createElement('i');
+            const dw_i = document.createElement('i');
+            
+            o_div.classList.add('tree_order_div');
+
+            up_i.classList.add('fa','fa-arrow-up');
+            up_i.dataset.target = "1";
+            dw_i.classList.add('fa','fa-arrow-down');
+            dw_i.dataset.target = "0";
+
+            o_div.appendChild(up_i);
+            o_div.appendChild(dw_i);
+            //ordering event
+            o_div.onclick = (e) => e.target.tagName == 'I' ? this.orderNode(e) : false;
+            
+            div_item.appendChild(o_div);
+        }
+
+
         //make node dragable
         if (this.config.drag) {
             //add drag button to start
-            let a_ditem = document.createElement('a');
-            let i_ditem = document.createElement('i');
+            const a_ditem = document.createElement('a');
+            const i_ditem = document.createElement('i');
             //set icon drag button
             i_ditem.classList.add('fa');
             i_ditem.classList.add('fa-bars');
@@ -646,8 +707,11 @@ class PickleTree {
         //set a_item title
         a_item.innerHTML += ' ' + node.title;
 
+        a_item.onclick = (e) =>this.toggleNode(node);
+
         //set li item id
         li_item.id = node.id;
+        li_item.dataset.order = 'order_'+node.order ;
 
         div_item.id = 'div_g_' + node.id;
         //set a tag to div item
@@ -656,9 +720,9 @@ class PickleTree {
 
         //set switch to li item if user is wanted
         if (this.config.switchMode) {
-            let sw_item = document.createElement('label');
-            let ck_item = document.createElement('input');
-            let spn_item = document.createElement('span');
+            const sw_item = document.createElement('label');
+            const ck_item = document.createElement('input');
+            const spn_item = document.createElement('span');
             spn_item.classList.add('slider');
             spn_item.classList.add('round');
             ck_item.type = 'checkbox'
@@ -674,6 +738,15 @@ class PickleTree {
             ck_item.value = node.value;
             //if item created as checked
             ck_item.checked = node.checkStatus;
+
+            ck_item.onclick = (e) => {
+                node.checkStatus = e.target.checked;
+                if (this.config.autoChild || this.config.autoParent) {
+                    this.checkNodeFamily(node);
+                }
+                this.checkNode(node);
+            };
+
             //switch is added to li element
             div_item.appendChild(sw_item);
         }
@@ -716,32 +789,46 @@ class PickleTree {
             document.getElementById('c_' + node.parent.id).appendChild(li_item)
         }
 
+        //node.element = li_item;
 
         //set node events
-        this.setNodeEvents(node);
+        this.setNodeEvents(node,div_item);
 
         //draw callback  method
         if (typeof this.rowCreateCallback == "function") this.rowCreateCallback(node);
     }
 
-    setNodeEvents(node) {
-        //toggle event for node
-        document.getElementById('a_toggle_' + node.id).addEventListener('click', e => {
-            //toggle item childs
-            this.toggleNode(this.getNode(e.currentTarget.id.split('node_')[1]));
-        });
+    setNodeEvents(node,parent) {
+        
 
-        //switch event for node
-        if (this.config.switchMode) {
-            document.getElementById('ck_' + node.id).addEventListener('click', e => {
-                let node = this.getNode(e.currentTarget.id.split('node_')[1]);
-                node.checkStatus = e.currentTarget.checked;
-                if (this.config.autoChild || this.config.autoParent) {
-                    this.checkNodeFamily(node);
+        
+        //order event for node
+        /*if(this.config.order){
+            node.element.getElementById('order_'+node.id).addEventListener('click',e=>{
+                if(e.target.tagName == 'I'){
+                    const isBefore = e.target.dataset.target == 1;
+                    const main = e.target.parentNode.parentNode.parentNode;
+                    const target = isBefore ? main.previousElementSibling : main.nextElementSibling;
+                    //get nodes
+                    if(target !== null){
+                        //replace data
+                        const targetNode = this.getNode(target.id.split('_treenode_')[1]);
+                        const mainNode   = this.getNode(main.id.split('_treenode_')[1]);
+                        //console.log( mainNode.order,targetNode.order);
+                        const currentOrder = mainNode.order;
+                        const targetOrder  = targetNode.order === mainNode.order ? (isBefore ? targetNode.order-1 : targetNode.order+1 )  : targetNode.order;
+                        //change order data
+                        targetNode.order = currentOrder;
+                        mainNode.order   = targetOrder;
+                        //console.log( mainNode.order,targetNode.order);
+                        //replace element
+                        main.parentNode.replaceChild(main,target);
+                        main.parentNode.insertBefore(target, isBefore ? main.nextSibling : main);
+                    }
                 }
-                this.checkNode(node);
+                
             });
-        }
+        }*/
     }
 
 
@@ -757,10 +844,12 @@ class PickleTree {
             let order = (list, p = { n_id: 0, Child: [] }, tree = []) => {
                 let childrens = list.filter(y => y.n_parentid === p.n_id);
                 if (childrens.length > 0) {
+                    // order items by order_num param if exist
+                    childrens.sort((a, b) => parseFloat(a.n_order_num === undefined ? 0 : a.n_order_num) - parseFloat(b.n_order_num === undefined ? 0 : b.n_order_num));
                     if (p.n_id === 0) {
                         tree = childrens;
                     } else {
-                        p['Child'] = childrens
+                        p.Child = childrens;
                     }
                     for (let i = 0; i < childrens.length; i++) {
                         order(list, childrens[i]);
@@ -773,13 +862,15 @@ class PickleTree {
             let set = (list) => {
                 for (let i = 0; i < list.length; i++) {
                     this.createNode({
-                        n_addional:list[i].n_addional,
-                        n_value: list[i].n_id,
-                        n_title: list[i].n_title,
-                        n_id: list[i].n_id,
-                        n_elements: list[i].n_elements,
-                        n_parent: this.getNode(list[i].n_parentid),
-                        n_checkStatus: typeof list[i].n_checkStatus === 'undefined' ? false : list[i].n_checkStatus
+                        n_data        : list[i],
+                        n_addional    : list[i].n_addional,
+                        n_value       : list[i].n_id,
+                        n_title       : list[i].n_title,
+                        n_id          : list[i].n_id,
+                        n_elements    : list[i].n_elements,
+                        n_parent      : this.getNode(list[i].n_parentid),
+                        n_checkStatus : list[i].n_checkStatus === undefined ? false : list[i].n_checkStatus,
+                        n_order       : list[i].n_order_num
                     });
                     if (list[i].Child) {
                         set(list[i].Child);
@@ -803,7 +894,7 @@ class PickleTree {
     getMenu(element, node) {
         //get element location
         let x = element.getBoundingClientRect();
-        let origin = {
+        const origin = {
             node: node,
             left: x.x,
             top: x.y + x.height
@@ -816,7 +907,7 @@ class PickleTree {
         //check if menu already exist
         if (document.getElementById('div_menu_' + obj.node.id) === null) {
             //create menu div
-            let menu_item = document.createElement('div');
+            const menu_item = document.createElement('div');
             //add to body
             document.body.appendChild(menu_item);
             menu_item.id = 'div_menu_' + obj.node.id;
@@ -847,7 +938,14 @@ class PickleTree {
                 menu_item.style.left = obj.left + 'px';
             }
             menu_item.style.top = obj.top + 'px';
+
+            // listen mouse out
+            menu_item.onmouseleave = (e) => {
+                menu_item.remove();
+            };
         }
+
+        
 
     }
 
