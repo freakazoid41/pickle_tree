@@ -115,6 +115,9 @@ const tree = new PickleTree({
 
     //for toggling
     our_node.toggleNode();
+    
+    //for toggle on all parents and find location of node
+    our_node.showFamily();
 
     //for getting it's childs
     our_node.getChilds();
