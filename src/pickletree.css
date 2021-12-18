@@ -192,7 +192,7 @@
   border: 2px solid darkgrey;
   border-radius: 5px;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .tree .valid {
@@ -221,3 +221,6 @@
   max-height: 500px;
   transition: max-height 0.15s ease-in;
 }
+.ptree::-webkit-scrollbar { width: 2px !important;}
+.ptree::-webkit-scrollbar-track { background: whitesmoke !important;}
+.ptree::-webkit-scrollbar-thumb { background: grey !important; }
