@@ -403,6 +403,10 @@ class PickleTree {
         this.deleteNode(childs[i]);
       }
     }
+    
+    //remove node from container
+    delete this.nodeList[node.value];
+    
     if (elm !== null) elm.parentNode.removeChild(elm);
     this.log("node removed..(" + node.id + ")");
     if (this.nodeRemove !== undefined) this.nodeRemove(node);
