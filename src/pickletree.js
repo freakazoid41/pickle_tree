@@ -114,7 +114,7 @@ class PickleTree {
           }
         }
 
-        node.updateNode();
+        this.nodeList[node.value] = node.updateNode();
 
         //drop callback
         if (this.dropCallback) {
