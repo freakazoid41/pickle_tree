@@ -1,6 +1,6 @@
 //Pickle tree component created by Kadir Barış Bozat
 
-class PickleTree {
+export default class PickleTree {
   /**
    *
    * @param {object} obj as tree object
@@ -42,7 +42,7 @@ class PickleTree {
     this.main_container.addEventListener("click", (e) => {
       let elm = e.target;
       //close all first
-      document.querySelectorAll(".treemenuCont").forEach((menu) => {
+      document.querySelectorAll(".ptreemenuCont").forEach((menu) => {
         menu.outerHTML = "";
       });
       if (elm.classList.contains("menuIcon")) {
@@ -98,13 +98,14 @@ class PickleTree {
         //clear old targets
         this.clearDebris();
         //get node
+       
         const node = this.nodeList[parseInt(e.target.id.split("node_")[1])];
+        
         //check is valid
+        node.old_parent = node.parent;
         if (!this.invalid_area.valid) {
           node.parent = { id: 0 };
         } else {
-          //set old parent for cleaning
-          node.old_parent = node.parent;
           const drop = this.getNode(this.drag_target);
           if (this.drag_target === parseInt(e.target.id.split("node_")[1]) || this.drag_target === undefined || drop === undefined || drop.parent.value === node.value) {
             //this means it dragged to outside
@@ -113,8 +114,11 @@ class PickleTree {
             node.parent = drop;
           }
         }
-
+        
         this.nodeList[node.value] = node.updateNode();
+        
+        console.log(this.nodeList[node.value]);
+        
 
         //drop callback
         if (this.dropCallback) {
@@ -163,7 +167,7 @@ class PickleTree {
    */
   async destroy() {
     //remove all menus
-    document.querySelectorAll(".treemenuCont").forEach((menu) => {
+    document.querySelectorAll(".ptreemenuCont").forEach((menu) => {
       menu.outerHTML = "";
     });
     //remove all items
@@ -235,6 +239,7 @@ class PickleTree {
     }
     //referance for some events
     this.main_container = document.getElementById(this.target);
+    this.main_container.classList.add('ptree');
     this.main_container.innerHTML = '<div id="' + this.config.key + '_div_pickletree"><ul id="' + this.config.key + '_tree_picklemain"></ul></div>';
     //console.log(this.main_container.getElementById(this.config.key+'_tree_picklemain'));
 
@@ -263,7 +268,8 @@ class PickleTree {
       if (this.nodeList[key].id === node.parent.id) {
         this.nodeList[key].childs.push(node.id);
         //show icon for childs
-        document.getElementById("i_" + this.nodeList[key].id).style.display = "";
+        const ic = document.getElementById("i_" + this.nodeList[key].id);
+        if(ic !== null) ic.style.display = "";
       }
     }
   }
@@ -403,10 +409,9 @@ class PickleTree {
         this.deleteNode(childs[i]);
       }
     }
-    
     //remove node from container
-    delete this.nodeList[node.value];
-    
+    //delete this.nodeList[node.value];
+
     if (elm !== null) elm.parentNode.removeChild(elm);
     this.log("node removed..(" + node.id + ")");
     if (this.nodeRemove !== undefined) this.nodeRemove(node);
@@ -585,7 +590,7 @@ class PickleTree {
       }
     }
     //draw new node with childs
-    let set = (data) => {
+    const set = (data) => {
       this.drawNode(data);
       let childs = data.getChilds();
       if (childs.length > 0) {
@@ -594,8 +599,9 @@ class PickleTree {
         }
       }
     };
+    
     set(node);
-
+    
     //log
     this.log("Node is created (" + node.id + ")");
     //return node
@@ -776,8 +782,10 @@ class PickleTree {
     } else {
       //if has parent set to parents childs
       this.setChildNodes(node);
+      console.log(node.parent.id);
       //then put item
-      document.getElementById("c_" + node.parent.id).appendChild(li_item);
+      const cont = document.getElementById("c_" + node.parent.id);
+      if(cont !== null) cont.appendChild(li_item);
     }
 
     //node.element = li_item;
@@ -791,32 +799,32 @@ class PickleTree {
 
   setNodeEvents(node, parent) {
     //order event for node
-    /*if(this.config.order){
-            node.element.getElementById('order_'+node.id).addEventListener('click',e=>{
-                if(e.target.tagName == 'I'){
-                    const isBefore = e.target.dataset.target == 1;
-                    const main = e.target.parentNode.parentNode.parentNode;
-                    const target = isBefore ? main.previousElementSibling : main.nextElementSibling;
-                    //get nodes
-                    if(target !== null){
-                        //replace data
-                        const targetNode = this.getNode(target.id.split('_treenode_')[1]);
-                        const mainNode   = this.getNode(main.id.split('_treenode_')[1]);
-                        //console.log( mainNode.order,targetNode.order);
-                        const currentOrder = mainNode.order;
-                        const targetOrder  = targetNode.order === mainNode.order ? (isBefore ? targetNode.order-1 : targetNode.order+1 )  : targetNode.order;
-                        //change order data
-                        targetNode.order = currentOrder;
-                        mainNode.order   = targetOrder;
-                        //console.log( mainNode.order,targetNode.order);
-                        //replace element
-                        main.parentNode.replaceChild(main,target);
-                        main.parentNode.insertBefore(target, isBefore ? main.nextSibling : main);
-                    }
-                }
-                
-            });
-        }*/
+    if(this.config.order){
+          node.element.getElementById('order_'+node.id).addEventListener('click',e=>{
+              if(e.target.tagName == 'I'){
+                  const isBefore = e.target.dataset.target == 1;
+                  const main = e.target.parentNode.parentNode.parentNode;
+                  const target = isBefore ? main.previousElementSibling : main.nextElementSibling;
+                  //get nodes
+                  if(target !== null){
+                      //replace data
+                      const targetNode = this.getNode(target.id.split('_treenode_')[1]);
+                      const mainNode   = this.getNode(main.id.split('_treenode_')[1]);
+                      //console.log( mainNode.order,targetNode.order);
+                      const currentOrder = mainNode.order;
+                      const targetOrder  = targetNode.order === mainNode.order ? (isBefore ? targetNode.order-1 : targetNode.order+1 )  : targetNode.order;
+                      //change order data
+                      targetNode.order = currentOrder;
+                      mainNode.order   = targetOrder;
+                      //console.log( mainNode.order,targetNode.order);
+                      //replace element
+                      main.parentNode.replaceChild(main,target);
+                      main.parentNode.insertBefore(target, isBefore ? main.nextSibling : main);
+                  }
+              }
+              
+          });
+      }
   }
 
   /**
@@ -897,7 +905,7 @@ class PickleTree {
       //add to body
       document.body.appendChild(menu_item);
       menu_item.id = "div_menu_" + obj.node.id;
-      menu_item.classList.add("treemenuCont");
+      menu_item.classList.add("ptreemenuCont");
 
       //for each menu item
       let span_item;
