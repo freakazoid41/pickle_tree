@@ -1,6 +1,6 @@
 /** switch styles **/
-
-.tree .switch {
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css';
+.ptree .switch {
   position: relative;
   display: inline-block;
   width: 30px;
@@ -8,13 +8,13 @@
   margin: 0;
 }
 
-.tree .switch input {
+.ptree .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.tree .slider {
+.ptree .slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -26,7 +26,7 @@
   transition: 0.4s;
 }
 
-.tree .slider:before {
+.ptree .slider:before {
   position: absolute;
   content: "";
   height: 12px;
@@ -38,32 +38,32 @@
   transition: 0.4s;
 }
 
-.tree input:checked + .slider {
+.ptree input:checked + .slider {
   background-color: #66bb6a;
 }
 
-.tree input:focus + .slider {
+.ptree input:focus + .slider {
   box-shadow: 0 0 1px #2196f3;
 }
 
-.tree input:checked + .slider:before {
+.ptree input:checked + .slider:before {
   -webkit-transform: translateX(12px);
   -ms-transform: translateX(12px);
   transform: translateX(12px);
 }
-.tree a:hover > i,
-.tree i:hover {
+.ptree a:hover > i,
+.ptree i:hover {
   color: tomato !important;
   cursor: pointer;
 }
 
 /* Rounded sliders */
 
-.tree .slider.round {
+.ptree .slider.round {
   border-radius: 34px;
 }
 
-.tree .slider.round:before {
+.ptree .slider.round:before {
   border-radius: 50%;
 }
 
@@ -71,12 +71,12 @@
 
 /** border styles **/
 
-.tree ul li {
+.ptree ul li {
   list-style-type: none;
   border: 2px solid #fff;
 }
 
-.tree ul li div {
+.ptree ul li div {
   display: flex;
   list-style-type: none;
   margin: 1px;
@@ -87,7 +87,7 @@
   height: 30px;
 }
 
-.tree ul li a {
+.ptree ul li a {
   margin-right: 10px;
   margin-left: 10px;
   color: black;
@@ -95,13 +95,13 @@
   font-family: monospace, "Open Sans";
   text-decoration: none;
 }
-.tree ul {
+.ptree ul {
   padding-left: 15px;
 }
-.tree_order_div {
+.ptree_order_div {
   height: 20px !important;
 }
-.tree_order_div i {
+.ptree_order_div i {
   margin: 5px !important;
 }
 
@@ -109,14 +109,14 @@
 
 /* menu icon */
 
-.tree .menuIcon {
+.ptree .menuIcon {
   margin-left: auto;
   color: black;
 }
 
 /* menu container */
 
-.treemenuCont {
+.ptreemenuCont {
   display: flex;
   flex-direction: column;
   background-color: #ffff;
@@ -128,7 +128,7 @@
   font-family: monospace, "Open Sans";
 }
 
-.treemenuCont span {
+.ptreemenuCont span {
   padding: 10px 10px 10px 10px;
   border-bottom: 2px solid #9e9e9e;
   display: flex;
@@ -136,91 +136,92 @@
   cursor: pointer;
 }
 
-.treemenuCont span i {
+.ptreemenuCont span i {
   color: #ef5350;
   padding-right: 3px;
 }
 
-.treemenuCont span:last-child {
+.ptreemenuCont span:last-child {
   border-bottom: 0px solid;
 }
 
-.treemenuCont span:first-child:hover {
+.ptreemenuCont span:first-child:hover {
   border-radius: 5px;
 }
-.treemenuCont span:only-child {
+.ptreemenuCont span:only-child {
   border-radius: 5px;
 }
-.treemenuCont span:hover {
+.ptreemenuCont span:hover {
   background: #dcdcdc;
 }
 
-.tree .menuIcon i {
+.ptree .menuIcon i {
   pointer-events: none;
 }
 
 /** drag styles **/
 
-.tree .drag-handler {
+.ptree .drag-handler {
   color: #ef5350;
 }
 
-.tree .drag-handler i {
+.ptree .drag-handler i {
   pointer-events: none;
 }
 
-.tree .drag_triggered {
+.ptree .drag_triggered {
   border: 2px solid red;
 }
 
-.tree #div_ddetail {
+.ptree #div_ddetail {
   width: 120px;
   background-color: #555;
   color: #fff;
   text-align: center;
   padding: 5px 0;
-  border-radius: 5px;
+  border-radius: 10px;
   z-index: 1;
 }
 
-.tree #div_ddetail span {
+.ptree #div_ddetail span {
   font-size: larger;
   margin: 3px 5px 3px 5px;
 }
 
-.tree {
+.ptree {
   border: 2px solid darkgrey;
   border-radius: 5px;
   height: 100%;
   overflow-y: auto;
 }
 
-.tree .valid {
+.ptree .valid {
   border: 2px solid green;
   border-radius: 5px;
 }
 
-.tree .invalid {
+.ptree .invalid {
   border: 2px solid #ef5350;
   border-radius: 5px;
 }
 .disabled > * {
   pointer-events: none;
 }
-.treemenuCont i {
+.ptreemenuCont i {
   pointer-events: none;
 }
 
-.tree ul.not-active {
+.ptree ul.not-active {
   max-height: 0;
   transition: max-height 0.25s ease-out;
   overflow: hidden;
 }
 
-.tree ul.active {
+.ptree ul.active {
   max-height: 500px;
   transition: max-height 0.15s ease-in;
 }
+
 .ptree::-webkit-scrollbar { width: 2px !important;}
 .ptree::-webkit-scrollbar-track { background: whitesmoke !important;}
 .ptree::-webkit-scrollbar-thumb { background: grey !important; }
