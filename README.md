@@ -130,10 +130,17 @@ const tree = new PickleTree({
     
     //for deselecting all checked (selected) nodes
     tree.resetSelected();
+    
+   
 
     //update node
     our_node.title = 'A new title for my node ';
     our_node.updateNode();
+    //scroll to node
+    our_node.scroll();
+    
+    //find childs of node from their text
+    our_node.find('falan');
 
     // for creating new  node manualy
     let new_node = tree.createNode({
