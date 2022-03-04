@@ -584,6 +584,18 @@ class PickleTree {
                 node.checkStatus = status;
                 this.checkNode(node);
             },
+            //scroll to node
+            scroll:() => document.getElementById(node.id).scrollIntoView(),
+            //find child nodes from text
+            find  :(text) => {
+                const nodes = [];
+                document.getElementById(node.id).querySelectorAll('li').forEach(el=>{
+                    if(el.innerHTML.includes(text)){
+                        nodes.push(this.getNode(el.id.split("node_")[1]))
+                    }
+                });
+                return nodes;
+            }
         };
 
         //check setted values here!!
