@@ -102,6 +102,7 @@
 }
 .ptree_order_div {
   height: 20px !important;
+  border: 0 !important;
 }
 .ptree_order_div i {
   margin: 5px !important;
