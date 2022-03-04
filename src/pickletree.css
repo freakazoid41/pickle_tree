@@ -71,12 +71,13 @@
 
 /** border styles **/
 
-.ptree ul li {
+.ptree li {
   list-style-type: none;
   border: 2px solid #fff;
+  border-right: 0px !important;
 }
 
-.ptree ul li div {
+.ptree li div {
   display: flex;
   list-style-type: none;
   margin: 1px;
@@ -87,7 +88,7 @@
   height: 30px;
 }
 
-.ptree ul li a {
+.ptree li a {
   margin-right: 10px;
   margin-left: 10px;
   color: black;
@@ -97,6 +98,7 @@
 }
 .ptree ul {
   padding-left: 15px;
+  
 }
 .ptree_order_div {
   height: 20px !important;
@@ -193,6 +195,7 @@
   border-radius: 5px;
   height: 100%;
   overflow-y: auto;
+  padding-right: 15px;
 }
 
 .ptree .valid {
@@ -221,7 +224,7 @@
   max-height: 500px;
   transition: max-height 0.15s ease-in;
 }
-
+.dragging-element li{ border: 0px !important;}
 .ptree::-webkit-scrollbar { width: 2px !important;}
 .ptree::-webkit-scrollbar-track { background: whitesmoke !important;}
 .ptree::-webkit-scrollbar-thumb { background: grey !important; }
