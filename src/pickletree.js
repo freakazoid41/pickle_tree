@@ -676,7 +676,7 @@ class PickleTree {
             const up_i = document.createElement("i");
             const dw_i = document.createElement("i");
 
-            o_div.classList.add("tree_order_div");
+            o_div.classList.add("ptree_order_div");
 
             up_i.classList.add("fa", "fa-arrow-up");
             up_i.dataset.target = "1";
