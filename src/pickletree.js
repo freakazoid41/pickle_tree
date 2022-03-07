@@ -108,8 +108,8 @@ class PickleTree {
                 const bounds = e.currentTarget.getBoundingClientRect();
                 /////// ***** ///////
                 this.clone.style.position = "absolute";
-                this.clone.style.left = `${e.clientX - bounds.left + 10}px`;
-                this.clone.style.top = `${e.clientY - bounds.top +10 }px`;
+                this.clone.style.left = `${e.clientX - bounds.left + 30}px`;
+                this.clone.style.top = `${e.clientY - bounds.top + 30 }px`;
                 /////// ***** ///////
             });
 
