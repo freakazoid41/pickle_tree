@@ -105,10 +105,11 @@ class PickleTree {
 
             //draging
             this.main_container.addEventListener("drag", (e) => {
+                const bounds = e.currentTarget.getBoundingClientRect();
                 /////// ***** ///////
                 this.clone.style.position = "absolute";
-                this.clone.style.left = `${e.clientX+2}px`;
-                this.clone.style.top = `${e.clientY+2}px`;
+                this.clone.style.left = `${e.clientX - bounds.left + 10}px`;
+                this.clone.style.top = `${e.clientY - bounds.top +10 }px`;
                 /////// ***** ///////
             });
 
