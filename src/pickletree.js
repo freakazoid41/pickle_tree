@@ -89,6 +89,7 @@ class PickleTree {
                 this.clone.style.zIndex = 1000;
                 this.clone.querySelectorAll('div').forEach(el=>el.style.backgroundColor = 'grey');
                 this.clone.querySelectorAll('li').forEach(el=>el.style.border = 'unset !important');
+                this.clone.style.width = '50vh';
                 //this.clone.querySelector('ul').remove();
                 this.clone.querySelectorAll('.switch').forEach(el => el.remove());
                 const rul = document.createElement('ul');
@@ -105,9 +106,9 @@ class PickleTree {
             //draging
             this.main_container.addEventListener("drag", (e) => {
                 /////// ***** ///////
-                console.log('drag happenign');
-                this.clone.style.marginLeft = e.pageX - 0+ 'px';
-                this.clone.style.marginTop = e.pageY - 525+ 'px';
+                this.clone.style.position = "absolute";
+                this.clone.style.left = `${e.clientX+2}px`;
+                this.clone.style.top = `${e.clientY+2}px`;
                 /////// ***** ///////
             });
 
