@@ -322,13 +322,11 @@ class PickleTree {
     /**
      * this method will reset switched nodes
      */
-    resetSelected() {
+    resetSelected(type = false) {
         //get all checked nodes
         for (let key in this.nodeList) {
-            if (this.nodeList[key].checkStatus) {
-                this.nodeList[key].checkStatus = false;
-                this.checkNode(this.nodeList[key]);
-            }
+            this.nodeList[key].checkStatus = type;
+             this.checkNode(this.nodeList[key]);
         }
         return true;
     }
