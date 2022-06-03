@@ -84,7 +84,7 @@ class PickleTree {
                 //draging
                 //clone element when drag start
                 const id = e.target.id.split("node_")[1];
-                this.clone = document.getElementById("div_treenode_" + id).cloneNode(true);
+                this.clone = document.getElementById(this.target + "node_" + id).cloneNode(true);
                 this.clone.style.position = 'absolute';
                 this.clone.style.zIndex = 1000;
                 this.clone.querySelectorAll('div').forEach(el=>el.style.backgroundColor = 'grey');
