@@ -84,7 +84,7 @@ class PickleTree {
                 //draging
                 //clone element when drag start
                 const id = e.target.id.split("node_")[1];
-                this.clone = document.getElementById(this.target + "node_" + id).cloneNode(true);
+                this.clone = document.getElementById(this.target +'node_' + id).cloneNode(true);
                 this.clone.style.position = 'absolute';
                 this.clone.style.zIndex = 1000;
                 this.clone.querySelectorAll('div').forEach(el=>el.style.backgroundColor = 'grey');
@@ -357,21 +357,24 @@ class PickleTree {
         const target = isBefore ? main.previousElementSibling : main.nextElementSibling;
         //get nodes
         if (target !== null) {
+            
             //replace data
-            const targetNode = this.getNode(target.id.split("_treenode_")[1]);
-            const mainNode = this.getNode(main.id.split("_treenode_")[1]);
-
+            const targetNode = this.getNode(target.id.split("_").at(-1));
+            const mainNode = this.getNode(main.id.split("_").at(-1));
             const currentOrder = mainNode.order;
             const targetOrder = targetNode.order === mainNode.order ? (isBefore ? targetNode.order - 1 : targetNode.order + 1) : targetNode.order;
             //change order data
             targetNode.order = currentOrder;
             mainNode.order = targetOrder;
 
+            target.dataset.order = 'order_'+currentOrder;
+            main.dataset.order   = 'order_'+targetOrder;
+
             //replace element
             main.parentNode.replaceChild(main, target);
             main.parentNode.insertBefore(target, isBefore ? main.nextSibling : main);
         }
-        if (typeof this.orderCallback == "function") this.config.orderCallback(main, target);
+        if (typeof this.orderCallback == "function") this.orderCallback(main, target);
     }
     /**
      * get child nodes list of node
@@ -829,7 +832,6 @@ class PickleTree {
         } else {
             //if has parent set to parents childs
             this.setChildNodes(node);
-            console.log(node.parent.id);
             //then put item
             const cont = document.getElementById("c_" + node.parent.id);
             if (cont !== null) cont.appendChild(li_item);
@@ -855,8 +857,8 @@ class PickleTree {
                     //get nodes
                     if (target !== null) {
                         //replace data
-                        const targetNode = this.getNode(target.id.split('_treenode_')[1]);
-                        const mainNode = this.getNode(main.id.split('_treenode_')[1]);
+                        const targetNode = this.getNode(target.id.split("_").at(-1));
+                        const mainNode = this.getNode(main.id.split("_").at(-1));
                         //console.log( mainNode.order,targetNode.order);
                         const currentOrder = mainNode.order;
                         const targetOrder = targetNode.order === mainNode.order ? (isBefore ? targetNode.order - 1 : targetNode.order + 1) : targetNode.order;
