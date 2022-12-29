@@ -889,7 +889,7 @@ class PickleTree {
                 n_id: 0,
                 Child: []
             }, tree = []) => {
-                let childrens = list.filter((y) => y.n_parentid === p.n_id);
+                let childrens = list.filter((y) => parseInt(y.n_parentid) === parseInt(p.n_id));
                 if (childrens.length > 0) {
                     // order items by order_num param if exist
                     childrens.sort((a, b) => parseFloat(a.n_order_num === undefined ? 0 : a.n_order_num) - parseFloat(b.n_order_num === undefined ? 0 : b.n_order_num));
